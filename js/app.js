@@ -8,7 +8,7 @@ import {
     openResetConfirmModal, closeResetConfirmModal, getBookIdToDelete, getActiveDetailsBookId
 } from "./modals.js";
 import {
-    saveToLocalStorage, initTheme, applyTheme, toggleTheme,
+    saveToLocalStorage, initTheme, toggleTheme,
     initView, toggleView
 } from "./storage.js";
 import { initEvents } from "./events.js";
