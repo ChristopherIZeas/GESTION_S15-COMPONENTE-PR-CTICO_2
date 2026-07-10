@@ -130,3 +130,10 @@ Cambio solicitado. Autocompletado predictivo para el campo Autor en los formular
 Motivo del cambio. Autocompletar dinámicamente con sugerencias los nombres de los autores existentes en el catálogo al escribir en los formularios de añadir/editar, mediante datalist nativo.
 Responsable. aalvarador8
 Fecha de aprobación. 2026-07-09
+
+---
+
+Cambio solicitado. Animaciones de transición fluidas en la UI (micro-interacciones estéticas).
+Motivo del cambio. Elevar la calidad del diseño visual con animaciones de entrada escalonadas (stagger) para las tarjetas de libros y efectos de escala activos al presionar los botones.
+Responsable. aalvarador8
+Fecha de aprobación. 2026-07-09

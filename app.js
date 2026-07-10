@@ -129,10 +129,11 @@ function renderBooks(booksToRender) {
         return;
     }
 
-    booksToRender.forEach(book => {
+    booksToRender.forEach((book, index) => {
         const bookCard = document.createElement("div");
         bookCard.className = "book-card";
         bookCard.dataset.id = book.id;
+        bookCard.style.animationDelay = `${index * 0.04}s`;
 
         const isAvailable = book.status === "available";
         const badgeClass = isAvailable ? "badge-available" : "badge-borrowed";
