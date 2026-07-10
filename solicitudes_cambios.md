@@ -172,3 +172,10 @@ Cambio solicitado. Modularización del Dashboard de Estadísticas (js/stats.js).
 Motivo del cambio. Aislar la lógica de cálculo y actualización en el DOM de los indicadores clave de la biblioteca (total, disponibles, prestados, porcentaje de disponibilidad) en un archivo modular stats.js.
 Responsable. ikisita2004
 Fecha de aprobación. 2026-07-09
+
+---
+
+Cambio solicitado. Modularización del Subsistema de Búsqueda, Filtro y Ordenamiento (js/filter.js).
+Motivo del cambio. Mover la función de búsqueda interactiva y filtros por género, disponibilidad y favoritos, así como la clasificación por criterios, a su propio archivo modular js/filter.js.
+Responsable. ikisita2004
+Fecha de aprobación. 2026-07-09

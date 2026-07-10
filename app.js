@@ -2,12 +2,14 @@ import { getBooks, setBooks, getShowOnlyFavorites, setShowOnlyFavorites, initial
 import { showToast } from "./js/toast.js";
 import { renderBooks, getStarsHtml } from "./js/render.js";
 import { updateStatistics } from "./js/stats.js";
+import { handleSearch } from "./js/filter.js";
 
 // Vincular a window para compatibilidad temporal en este archivo
 window.showToast = showToast;
 window.renderBooks = renderBooks;
 window.getStarsHtml = getStarsHtml;
 window.updateStatistics = updateStatistics;
+window.handleSearch = handleSearch;
 
 // Vincular getters y setters globales para retrocompatibilidad modular
 Object.defineProperty(window, "books", {
@@ -28,15 +30,11 @@ Object.defineProperty(window, "initialBooks", {
 });
 
 // Referencias a elementos del DOM
-const searchInput = document.getElementById("search-input");
 const addBookBtn = document.getElementById("add-book-btn");
 const addBookModal = document.getElementById("add-book-modal");
 const closeModalBtn = document.getElementById("close-modal-btn");
 const cancelModalBtn = document.getElementById("cancel-modal-btn");
 const addBookForm = document.getElementById("add-book-form");
-const genreFilter = document.getElementById("genre-filter");
-const statusFilter = document.getElementById("status-filter");
-const sortSelect = document.getElementById("sort-select");
 
 
 
@@ -83,44 +81,7 @@ const favoritesToggleBtn = document.getElementById("favorites-toggle-btn");
 
 
 
-/**
- * Filtra los libros en tiempo real basados en la búsqueda del usuario y el género seleccionado
- */
-function handleSearch() {
-    const query = searchInput.value.toLowerCase().trim();
-    const selectedGenre = genreFilter.value;
-    const selectedStatus = statusFilter.value;
-    
-    const filtered = books.filter(book => {
-        const matchesQuery = (
-            book.title.toLowerCase().includes(query) ||
-            book.author.toLowerCase().includes(query) ||
-            book.genre.toLowerCase().includes(query)
-        );
-        const matchesGenre = selectedGenre === "all" || book.genre === selectedGenre;
-        const matchesStatus = selectedStatus === "all" || book.status === selectedStatus;
-        const matchesFav = !showOnlyFavorites || book.favorite;
-        return matchesQuery && matchesGenre && matchesStatus && matchesFav;
-    });
-    
-    const sortBy = sortSelect.value;
-    filtered.sort((a, b) => {
-        if (sortBy === "title-asc") {
-            return a.title.localeCompare(b.title);
-        } else if (sortBy === "title-desc") {
-            return b.title.localeCompare(a.title);
-        } else if (sortBy === "year-desc") {
-            return b.year - a.year;
-        } else if (sortBy === "year-asc") {
-            return a.year - b.year;
-        } else if (sortBy === "rating-desc") {
-            return (b.rating || 0) - (a.rating || 0);
-        }
-        return 0;
-    });
-    
-    renderBooks(filtered);
-}
+
 
 /**
  * Actualiza dinámicamente las opciones del selector de géneros
