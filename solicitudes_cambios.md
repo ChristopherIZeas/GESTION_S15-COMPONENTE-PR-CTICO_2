@@ -158,3 +158,10 @@ Cambio solicitado. Modularización del componente de Notificaciones (js/toast.js
 Motivo del cambio. Extraer la lógica de alertas flotantes temporales (toasts) a un módulo de JavaScript dedicado, desacoplándola del archivo principal y facilitando su reutilización.
 Responsable. ikisita2004
 Fecha de aprobación. 2026-07-09
+
+---
+
+Cambio solicitado. Modularización del Renderizador de Libros (js/render.js).
+Motivo del cambio. Extraer la lógica de renderizado del listado/malla de libros del catálogo y el generador de estrellas de calificación a un módulo independiente.
+Responsable. ikisita2004
+Fecha de aprobación. 2026-07-09
