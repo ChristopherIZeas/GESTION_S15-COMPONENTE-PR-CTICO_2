@@ -7,7 +7,8 @@ export const initialBooks = [
         genre: "Realismo Mágico",
         year: 1967,
         status: "available",
-        rating: 5
+        rating: 5,
+        description: "La historia de la familia Buendía a lo largo de generaciones en Macondo, una de las obras más influyentes del realismo mágico."
     },
     {
         id: 2,
@@ -16,7 +17,8 @@ export const initialBooks = [
         genre: "Novela",
         year: 1605,
         status: "available",
-        rating: 4
+        rating: 4,
+        description: "Las aventuras de Don Quijote y Sancho Panza en una novela clásica que transformó la literatura occidental."
     },
     {
         id: 3,
@@ -25,7 +27,8 @@ export const initialBooks = [
         genre: "Distopía",
         year: 1949,
         status: "borrowed",
-        rating: 4
+        rating: 4,
+        description: "Una visión inquietante de un futuro totalitario donde la vigilancia y el control dominan cada aspecto de la vida."
     },
     {
         id: 4,
@@ -34,7 +37,8 @@ export const initialBooks = [
         genre: "Fantasía",
         year: 1943,
         status: "available",
-        rating: 5
+        rating: 5,
+        description: "Un pequeño príncipe viaja por el universo reflexionando sobre la soledad, la amistad y el sentido de la vida."
     },
     {
         id: 5,
@@ -43,7 +47,8 @@ export const initialBooks = [
         genre: "Divulgación Científica",
         year: 1988,
         status: "borrowed",
-        rating: 3
+        rating: 3,
+        description: "Una introducción accesible a los grandes conceptos de la cosmología moderna, desde el Big Bang hasta los agujeros negros."
     }
 ];
 
