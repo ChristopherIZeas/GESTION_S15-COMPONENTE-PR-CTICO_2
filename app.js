@@ -48,6 +48,17 @@ let books = [...initialBooks];
 // Referencias a elementos del DOM
 const booksGrid = document.getElementById("books-grid");
 const searchInput = document.getElementById("search-input");
+const addBookBtn = document.getElementById("add-book-btn");
+const addBookModal = document.getElementById("add-book-modal");
+const closeModalBtn = document.getElementById("close-modal-btn");
+const cancelModalBtn = document.getElementById("cancel-modal-btn");
+const addBookForm = document.getElementById("add-book-form");
+
+// Inputs del formulario
+const titleInput = document.getElementById("book-title-input");
+const authorInput = document.getElementById("book-author-input");
+const genreInput = document.getElementById("book-genre-input");
+const yearInput = document.getElementById("book-year-input");
 
 /**
  * Renderiza la lista de libros en la cuadrícula del DOM
@@ -113,8 +124,46 @@ function handleSearch() {
     renderBooks(filtered);
 }
 
+// Funciones para el Modal
+function openModal() {
+    addBookModal.classList.add("active");
+}
+
+function closeModal() {
+    addBookModal.classList.remove("active");
+    addBookForm.reset();
+}
+
+function handleAddBook(e) {
+    e.preventDefault();
+    
+    const newBook = {
+        id: books.length ? Math.max(...books.map(b => b.id)) + 1 : 1,
+        title: titleInput.value.trim(),
+        author: authorInput.value.trim(),
+        genre: genreInput.value.trim(),
+        year: parseInt(yearInput.value),
+        status: "available"
+    };
+
+    books.push(newBook);
+    renderBooks(books);
+    closeModal();
+}
+
 // Event Listeners
 searchInput.addEventListener("input", handleSearch);
+addBookBtn.addEventListener("click", openModal);
+closeModalBtn.addEventListener("click", closeModal);
+cancelModalBtn.addEventListener("click", closeModal);
+addBookForm.addEventListener("submit", handleAddBook);
+
+// Cerrar modal al hacer click fuera del contenido
+addBookModal.addEventListener("click", (e) => {
+    if (e.target === addBookModal) {
+        closeModal();
+    }
+});
 
 // Inicialización de la aplicación
 document.addEventListener("DOMContentLoaded", () => {
