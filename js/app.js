@@ -1,4 +1,12 @@
-import { getBooks, setBooks, getShowOnlyFavorites, setShowOnlyFavorites, initialBooks } from "./state.js";
+import {
+    getBooks,
+    setBooks,
+    getShowOnlyFavorites,
+    setShowOnlyFavorites,
+    getCurrentUser,
+    setCurrentUser,
+    setIsCatalogLoading
+} from "./state.js";
 import { showToast } from "./toast.js";
 import { updateStatistics } from "./stats.js";
 import { handleSearch } from "./filter.js";
@@ -8,12 +16,57 @@ import {
     openResetConfirmModal, closeResetConfirmModal, getBookIdToDelete, getActiveDetailsBookId
 } from "./modals.js";
 import {
-    saveToLocalStorage, initTheme, toggleTheme,
+    initTheme, applyTheme,
     initView, toggleView
 } from "./storage.js";
 import { initEvents } from "./events.js";
+import {
+    clearUserBooks,
+    createBook,
+    listenAuth,
+    listenUserBooks,
+    loginWithGoogle,
+    logout,
+    removeBook,
+    updateBook,
+    upsertUserProfile
+} from "./firebase.js";
 
+let unsubscribeBooks = null;
 
+function refreshCatalogUI() {
+    updateGenreOptions();
+    handleSearch();
+    updateStatistics();
+}
+
+function requireUser() {
+    const user = getCurrentUser();
+    if (!user) {
+        showToast("Inicia sesión para administrar tu biblioteca.", "error");
+        return null;
+    }
+
+    return user;
+}
+
+function getFirebaseErrorMessage(error, fallback) {
+    const code = error?.code || "";
+
+    if (code.includes("permission-denied")) {
+        return "Permiso denegado en Firestore. Publica reglas que permitan leer/escribir users/{uid}.";
+    }
+
+    if (code.includes("not-found")) {
+        return "Firestore no encontró la base de datos. Crea Firestore Database en Firebase Console.";
+    }
+
+    if (code.includes("unavailable")) {
+        return "Firestore no está disponible temporalmente. Intenta nuevamente en unos minutos.";
+    }
+
+    return fallback;
+}
 
 /**
  * Actualiza dinámicamente las opciones del selector de géneros
@@ -119,7 +172,7 @@ function updateFormGenreSelects() {
     populateSelect(editGenreSelect);
 }
 
-function handleAddBook(e) {
+async function handleAddBook(e) {
     e.preventDefault();
     
     const titleInput = document.getElementById("book-title-input");
@@ -172,8 +225,10 @@ function handleAddBook(e) {
         return;
     }
     
+    const user = requireUser();
+    if (!user) return;
+
     const newBook = {
-        id: books.length ? Math.max(...books.map(b => b.id)) + 1 : 1,
         title,
         author,
         genre,
@@ -183,17 +238,17 @@ function handleAddBook(e) {
         rating
     };
 
-    books.push(newBook);
-    setBooks(books);
-    saveToLocalStorage();
-    updateGenreOptions();
-    handleSearch();
-    updateStatistics();
-    showToast(`Libro "${title}" agregado con éxito.`, "success");
-    closeModal();
+    try {
+        await createBook(user.uid, newBook);
+        showToast(`Libro "${title}" agregado con éxito.`, "success");
+        closeModal();
+    } catch (error) {
+        console.error(error);
+        showToast("No se pudo guardar el libro en Firestore.", "error");
+    }
 }
 
-function handleEditBook(e) {
+async function handleEditBook(e) {
     e.preventDefault();
     
     const editBookId = document.getElementById("edit-book-id");
@@ -208,7 +263,7 @@ function handleEditBook(e) {
 
     if (!editBookId || !editTitleInput || !editAuthorInput || !editGenreSelect || !editGenreCustomInput || !editYearInput || !editStatusSelect || !editDescriptionInput || !editRatingInput) return;
 
-    const id = parseInt(editBookId.value);
+    const id = editBookId.value;
     const title = editTitleInput.value.trim();
     const author = editAuthorInput.value.trim();
     const year = parseInt(editYearInput.value);
@@ -248,24 +303,24 @@ function handleEditBook(e) {
         return;
     }
     
-    // Actualizar libro
-    const bookIndex = books.findIndex(b => b.id === id);
-    if (bookIndex !== -1) {
-        books[bookIndex].title = title;
-        books[bookIndex].author = author;
-        books[bookIndex].genre = genre;
-        books[bookIndex].year = year;
-        books[bookIndex].status = status;
-        books[bookIndex].description = description;
-        books[bookIndex].rating = rating;
-        
-        setBooks(books);
-        saveToLocalStorage();
-        updateGenreOptions();
-        handleSearch();
-        updateStatistics();
+    const user = requireUser();
+    if (!user) return;
+
+    try {
+        await updateBook(user.uid, id, {
+            title,
+            author,
+            genre,
+            year,
+            status,
+            description,
+            rating
+        });
         showToast(`Libro "${title}" actualizado con éxito.`, "success");
         closeEditModal();
+    } catch (error) {
+        console.error(error);
+        showToast("No se pudieron guardar los cambios en Firestore.", "error");
     }
 }
 
@@ -285,9 +340,9 @@ function editActiveDetailsBook() {
     }
 }
 
-function handleThemeToggle() {
+function handleThemeChange(theme) {
     const activeDetailsBookId = getActiveDetailsBookId();
-    toggleTheme();
+    applyTheme(theme);
     handleSearch();
     if (activeDetailsBookId !== null) {
         openDetailsModal(activeDetailsBookId);
@@ -298,18 +353,23 @@ function handleThemeToggle() {
  * Alterna el estado de préstamo de un libro
  * @param {number} bookId - ID del libro a alternar
  */
-function toggleBookStatus(bookId) {
+async function toggleBookStatus(bookId) {
     const books = getBooks();
     const book = books.find(b => b.id === bookId);
     if (book) {
-        book.status = book.status === "available" ? "borrowed" : "available";
-        setBooks(books);
-        saveToLocalStorage();
-        handleSearch(); // Recargar respetando filtros
-        updateStatistics();
-        
-        const actionText = book.status === "borrowed" ? "prestado" : "devuelto";
-        showToast(`Libro "${book.title}" ${actionText} con éxito.`, "info");
+        const user = requireUser();
+        if (!user) return;
+
+        const nextStatus = book.status === "available" ? "borrowed" : "available";
+
+        try {
+            await updateBook(user.uid, bookId, { status: nextStatus });
+            const actionText = nextStatus === "borrowed" ? "prestado" : "devuelto";
+            showToast(`Libro "${book.title}" ${actionText} con éxito.`, "info");
+        } catch (error) {
+            console.error(error);
+            showToast("No se pudo actualizar el estado del libro.", "error");
+        }
     }
 }
 
@@ -318,15 +378,20 @@ function toggleBookStatus(bookId) {
  * @param {number} bookId - ID del libro
  * @param {number} ratingValue - Calificación asignada
  */
-function rateBook(bookId, ratingValue) {
+async function rateBook(bookId, ratingValue) {
     const books = getBooks();
     const book = books.find(b => b.id === bookId);
     if (book) {
-        book.rating = ratingValue;
-        setBooks(books);
-        saveToLocalStorage();
-        handleSearch(); // Recargar respetando filtros actuales
-        showToast(`Calificaste "${book.title}" con ${ratingValue} estrellas.`, "success");
+        const user = requireUser();
+        if (!user) return;
+
+        try {
+            await updateBook(user.uid, bookId, { rating: ratingValue });
+            showToast(`Calificaste "${book.title}" con ${ratingValue} estrellas.`, "success");
+        } catch (error) {
+            console.error(error);
+            showToast("No se pudo guardar la calificación.", "error");
+        }
     }
 }
 
@@ -334,45 +399,55 @@ function rateBook(bookId, ratingValue) {
  * Alterna el estado de favorito de un libro
  * @param {number} bookId - ID del libro
  */
-function toggleFavorite(bookId) {
+async function toggleFavorite(bookId) {
     const books = getBooks();
     const book = books.find(b => b.id === bookId);
     if (book) {
-        book.favorite = !book.favorite;
-        setBooks(books);
-        saveToLocalStorage();
-        handleSearch();
-        showToast(
-            book.favorite ? `"${book.title}" añadido a Favoritos.` : `"${book.title}" eliminado de Favoritos.`,
-            book.favorite ? "success" : "info"
-        );
-    }
-}
+        const user = requireUser();
+        if (!user) return;
 
-function executeDeleteBook() {
-    const bookIdToDelete = getBookIdToDelete();
-    if (bookIdToDelete !== null) {
-        let books = getBooks();
-        const book = books.find(b => b.id === bookIdToDelete);
-        const title = book ? book.title : "";
-        
-        books = books.filter(b => b.id !== bookIdToDelete);
-        setBooks(books);
-        saveToLocalStorage();
-        updateGenreOptions();
-        handleSearch();
-        updateStatistics();
-        closeConfirmModal();
-        
-        if (title) {
-            showToast(`Libro "${title}" eliminado con éxito.`, "info");
+        const nextFavorite = !book.favorite;
+
+        try {
+            await updateBook(user.uid, bookId, { favorite: nextFavorite });
+            showToast(
+                nextFavorite ? `"${book.title}" añadido a Favoritos.` : `"${book.title}" eliminado de Favoritos.`,
+                nextFavorite ? "success" : "info"
+            );
+        } catch (error) {
+            console.error(error);
+            showToast("No se pudo actualizar favoritos.", "error");
         }
     }
 }
 
-function executeResetCatalog() {
-    setBooks([...initialBooks]);
-    saveToLocalStorage();
+async function executeDeleteBook() {
+    const bookIdToDelete = getBookIdToDelete();
+    if (bookIdToDelete !== null) {
+        const user = requireUser();
+        if (!user) return;
+
+        const books = getBooks();
+        const book = books.find(b => b.id === bookIdToDelete);
+        const title = book ? book.title : "";
+
+        try {
+            await removeBook(user.uid, bookIdToDelete);
+            closeConfirmModal();
+
+            if (title) {
+                showToast(`Libro "${title}" eliminado con éxito.`, "info");
+            }
+        } catch (error) {
+            console.error(error);
+            showToast("No se pudo eliminar el libro.", "error");
+        }
+    }
+}
+
+async function executeResetCatalog() {
+    const user = requireUser();
+    if (!user) return;
     
     // Limpiar buscador y filtros
     const searchInput = document.getElementById("search-input");
@@ -397,20 +472,119 @@ function executeResetCatalog() {
         pill.classList.toggle("active", pill.dataset.status === "all");
     });
     
-    updateGenreOptions();
-    handleSearch();
-    updateStatistics();
-    closeResetConfirmModal();
-    showToast("Catálogo inicial restaurado con éxito.", "info");
+    try {
+        await clearUserBooks(user.uid);
+        closeResetConfirmModal();
+        showToast("Catálogo eliminado de Firestore.", "info");
+    } catch (error) {
+        console.error(error);
+        showToast("No se pudo limpiar el catálogo.", "error");
+    }
+}
+
+async function handleLogin() {
+    try {
+        await loginWithGoogle();
+    } catch (error) {
+        console.error(error);
+        showToast("No se pudo iniciar sesión con Google.", "error");
+    }
+}
+
+async function handleLogout() {
+    try {
+        await logout();
+    } catch (error) {
+        console.error(error);
+        showToast("No se pudo cerrar la sesión.", "error");
+    }
+}
+
+function setAuthView(user) {
+    const loginView = document.getElementById("login-view");
+    const appShell = document.querySelector(".page-shell");
+    const userName = document.getElementById("user-name");
+    const userEmail = document.getElementById("user-email");
+    const userAvatar = document.getElementById("user-avatar");
+
+    document.body.classList.toggle("is-authenticated", Boolean(user));
+    document.body.classList.toggle("is-guest", !user);
+
+    if (loginView) loginView.hidden = Boolean(user);
+    if (appShell) appShell.hidden = !user;
+    if (userName) userName.textContent = user?.displayName || "Usuario";
+    if (userEmail) userEmail.textContent = user?.email || "";
+    if (userAvatar) {
+        userAvatar.src = user?.photoURL || "";
+        userAvatar.alt = user?.displayName ? `Foto de ${user.displayName}` : "Foto de usuario";
+    }
+
+    if (!user && location.hash !== "#/login") {
+        location.hash = "#/login";
+    } else if (user && (!location.hash || location.hash === "#/login")) {
+        location.hash = "#/app";
+    }
+}
+
+function bindAuthEvents() {
+    const googleLoginBtn = document.getElementById("google-login-btn");
+    const logoutBtn = document.getElementById("logout-btn");
+
+    if (googleLoginBtn) googleLoginBtn.addEventListener("click", handleLogin);
+    if (logoutBtn) logoutBtn.addEventListener("click", handleLogout);
+
+    window.addEventListener("hashchange", () => {
+        if (!getCurrentUser() && location.hash !== "#/login") {
+            location.hash = "#/login";
+            showToast("Esa ruta requiere iniciar sesión.", "error");
+        }
+    });
+}
+
+function initAuthState() {
+    listenAuth(async (user) => {
+        setCurrentUser(user);
+        setAuthView(user);
+
+        if (unsubscribeBooks) {
+            unsubscribeBooks();
+            unsubscribeBooks = null;
+        }
+
+        if (!user) {
+            setBooks([]);
+            setIsCatalogLoading(false);
+            refreshCatalogUI();
+            return;
+        }
+
+        try {
+            await upsertUserProfile(user);
+        } catch (error) {
+            console.error(error);
+            showToast(getFirebaseErrorMessage(error, "No se pudo actualizar el perfil del usuario."), "error");
+        }
+
+        setIsCatalogLoading(true);
+        unsubscribeBooks = listenUserBooks(user.uid, (books) => {
+            setBooks(books);
+            setIsCatalogLoading(false);
+            refreshCatalogUI();
+        }, (error) => {
+            console.error(error);
+            setIsCatalogLoading(false);
+            showToast(getFirebaseErrorMessage(error, "No se pudo leer el catálogo desde Firestore."), "error");
+        });
+    });
 }
 
 // Inicialización de la aplicación e inicio de Eventos
 document.addEventListener("DOMContentLoaded", () => {
     initTheme();
     initView();
-    updateGenreOptions();
-    handleSearch();
-    updateStatistics();
+    bindAuthEvents();
+    refreshCatalogUI();
+    initAuthState();
     
     // Iniciar el enrutador de eventos modular
     initEvents({
@@ -425,7 +599,7 @@ document.addEventListener("DOMContentLoaded", () => {
         closeConfirmModal,
         openResetConfirmModal,
         closeResetConfirmModal,
-        toggleTheme: handleThemeToggle,
+        setTheme: handleThemeChange,
         toggleView,
         getShowOnlyFavorites,
         setShowOnlyFavorites,
