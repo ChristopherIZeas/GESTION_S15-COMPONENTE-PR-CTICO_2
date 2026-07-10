@@ -123,3 +123,10 @@ Cambio solicitado. Lista de Favoritos e icono de guardado rápido.
 Motivo del cambio. Habilitar la posibilidad de marcar libros como favoritos con un icono de corazón directamente sobre la tarjeta y filtrar el catálogo para mostrar solo los favoritos seleccionados.
 Responsable. aalvarador8
 Fecha de aprobación. 2026-07-09
+
+---
+
+Cambio solicitado. Autocompletado predictivo para el campo Autor en los formularios.
+Motivo del cambio. Autocompletar dinámicamente con sugerencias los nombres de los autores existentes en el catálogo al escribir en los formularios de añadir/editar, mediante datalist nativo.
+Responsable. aalvarador8
+Fecha de aprobación. 2026-07-09

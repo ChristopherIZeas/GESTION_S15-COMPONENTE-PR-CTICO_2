@@ -227,6 +227,30 @@ function updateGenreOptions() {
     
     // Sincronizar selectores de los formularios de añadir/editar
     updateFormGenreSelects();
+    // Actualizar sugerencias de autores
+    updateAuthorSuggestions();
+}
+
+/**
+ * Actualiza dinámicamente las sugerencias de autocompletado para el autor
+ */
+function updateAuthorSuggestions() {
+    const authors = [...new Set(books.map(b => b.author))];
+    
+    const populateDatalist = (datalistId) => {
+        const datalist = document.getElementById(datalistId);
+        if (datalist) {
+            datalist.innerHTML = "";
+            authors.forEach(author => {
+                const option = document.createElement("option");
+                option.value = author;
+                datalist.appendChild(option);
+            });
+        }
+    };
+    
+    populateDatalist("authors-list");
+    populateDatalist("edit-authors-list");
 }
 
 /**
