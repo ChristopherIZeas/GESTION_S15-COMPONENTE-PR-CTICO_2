@@ -1,12 +1,11 @@
 import { getBooks, setBooks, getShowOnlyFavorites, setShowOnlyFavorites, initialBooks } from "./state.js";
 import { showToast } from "./toast.js";
-import { renderBooks } from "./render.js";
 import { updateStatistics } from "./stats.js";
 import { handleSearch } from "./filter.js";
 import {
     openModal, closeModal, openEditModal, closeEditModal,
     openDetailsModal, closeDetailsModal, openConfirmModal, closeConfirmModal,
-    openResetConfirmModal, closeResetConfirmModal, getBookIdToDelete, setBookIdToDelete
+    openResetConfirmModal, closeResetConfirmModal, getBookIdToDelete, getActiveDetailsBookId
 } from "./modals.js";
 import {
     saveToLocalStorage, initTheme, applyTheme, toggleTheme,
@@ -21,6 +20,7 @@ import { initEvents } from "./events.js";
  */
 function updateGenreOptions() {
     const genreFilter = document.getElementById("genre-filter");
+    const genrePills = document.getElementById("genre-pills");
     if (!genreFilter) return;
 
     const books = getBooks();
@@ -39,6 +39,18 @@ function updateGenreOptions() {
         genreFilter.value = currentValue;
     } else {
         genreFilter.value = "all";
+    }
+
+    if (genrePills) {
+        genrePills.innerHTML = "";
+        genres.forEach((genre) => {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = `filter-pill ${genreFilter.value === genre ? "active" : ""}`;
+            button.dataset.genre = genre;
+            button.textContent = genre === "all" ? "Todos" : genre;
+            genrePills.appendChild(button);
+        });
     }
     
     // Sincronizar selectores de los formularios de añadir/editar
@@ -115,12 +127,18 @@ function handleAddBook(e) {
     const genreSelect = document.getElementById("book-genre-select");
     const genreCustomInput = document.getElementById("book-genre-custom-input");
     const yearInput = document.getElementById("book-year-input");
+    const statusSelect = document.getElementById("book-status-select");
+    const descriptionInput = document.getElementById("book-description-input");
+    const ratingInput = document.getElementById("book-rating-input");
 
-    if (!titleInput || !authorInput || !genreSelect || !genreCustomInput || !yearInput) return;
+    if (!titleInput || !authorInput || !genreSelect || !genreCustomInput || !yearInput || !statusSelect || !descriptionInput || !ratingInput) return;
 
     const title = titleInput.value.trim();
     const author = authorInput.value.trim();
     const year = parseInt(yearInput.value);
+    const status = statusSelect.value;
+    const description = descriptionInput.value.trim();
+    const rating = parseInt(ratingInput.dataset.rating || "0");
     
     let genre = genreSelect.value;
     if (genre === "custom") {
@@ -160,14 +178,16 @@ function handleAddBook(e) {
         author,
         genre,
         year,
-        status: "available"
+        status,
+        description,
+        rating
     };
 
     books.push(newBook);
     setBooks(books);
     saveToLocalStorage();
     updateGenreOptions();
-    renderBooks(books);
+    handleSearch();
     updateStatistics();
     showToast(`Libro "${title}" agregado con éxito.`, "success");
     closeModal();
@@ -182,13 +202,19 @@ function handleEditBook(e) {
     const editGenreSelect = document.getElementById("edit-book-genre-select");
     const editGenreCustomInput = document.getElementById("edit-book-genre-custom-input");
     const editYearInput = document.getElementById("edit-book-year-input");
+    const editStatusSelect = document.getElementById("edit-book-status-select");
+    const editDescriptionInput = document.getElementById("edit-book-description-input");
+    const editRatingInput = document.getElementById("edit-book-rating-input");
 
-    if (!editBookId || !editTitleInput || !editAuthorInput || !editGenreSelect || !editGenreCustomInput || !editYearInput) return;
+    if (!editBookId || !editTitleInput || !editAuthorInput || !editGenreSelect || !editGenreCustomInput || !editYearInput || !editStatusSelect || !editDescriptionInput || !editRatingInput) return;
 
     const id = parseInt(editBookId.value);
     const title = editTitleInput.value.trim();
     const author = editAuthorInput.value.trim();
     const year = parseInt(editYearInput.value);
+    const status = editStatusSelect.value;
+    const description = editDescriptionInput.value.trim();
+    const rating = parseInt(editRatingInput.dataset.rating || "0");
     
     let genre = editGenreSelect.value;
     if (genre === "custom") {
@@ -229,6 +255,9 @@ function handleEditBook(e) {
         books[bookIndex].author = author;
         books[bookIndex].genre = genre;
         books[bookIndex].year = year;
+        books[bookIndex].status = status;
+        books[bookIndex].description = description;
+        books[bookIndex].rating = rating;
         
         setBooks(books);
         saveToLocalStorage();
@@ -237,6 +266,31 @@ function handleEditBook(e) {
         updateStatistics();
         showToast(`Libro "${title}" actualizado con éxito.`, "success");
         closeEditModal();
+    }
+}
+
+function toggleActiveDetailsBookStatus() {
+    const activeDetailsBookId = getActiveDetailsBookId();
+    if (activeDetailsBookId !== null) {
+        toggleBookStatus(activeDetailsBookId);
+        openDetailsModal(activeDetailsBookId);
+    }
+}
+
+function editActiveDetailsBook() {
+    const activeDetailsBookId = getActiveDetailsBookId();
+    if (activeDetailsBookId !== null) {
+        closeDetailsModal();
+        openEditModal(activeDetailsBookId);
+    }
+}
+
+function handleThemeToggle() {
+    const activeDetailsBookId = getActiveDetailsBookId();
+    toggleTheme();
+    handleSearch();
+    if (activeDetailsBookId !== null) {
+        openDetailsModal(activeDetailsBookId);
     }
 }
 
@@ -325,11 +379,23 @@ function executeResetCatalog() {
     const genreFilter = document.getElementById("genre-filter");
     const statusFilter = document.getElementById("status-filter");
     const sortSelect = document.getElementById("sort-select");
+    const genrePills = document.getElementById("genre-pills");
+    const statusButtons = document.querySelectorAll(".status-group .filter-pill");
+    const sortCycleBtn = document.getElementById("sort-cycle-btn");
 
     if (searchInput) searchInput.value = "";
     if (genreFilter) genreFilter.value = "all";
     if (statusFilter) statusFilter.value = "all";
     if (sortSelect) sortSelect.value = "title-asc";
+    if (sortCycleBtn) sortCycleBtn.innerHTML = '<i class="fa-solid fa-arrow-up-a-z"></i><span>Título</span>';
+    if (genrePills) {
+        genrePills.querySelectorAll(".filter-pill").forEach((pill) => {
+            pill.classList.toggle("active", pill.dataset.genre === "all");
+        });
+    }
+    statusButtons.forEach((pill) => {
+        pill.classList.toggle("active", pill.dataset.status === "all");
+    });
     
     updateGenreOptions();
     handleSearch();
@@ -343,7 +409,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initTheme();
     initView();
     updateGenreOptions();
-    renderBooks(getBooks());
+    handleSearch();
     updateStatistics();
     
     // Iniciar el enrutador de eventos modular
@@ -359,7 +425,7 @@ document.addEventListener("DOMContentLoaded", () => {
         closeConfirmModal,
         openResetConfirmModal,
         closeResetConfirmModal,
-        toggleTheme,
+        toggleTheme: handleThemeToggle,
         toggleView,
         getShowOnlyFavorites,
         setShowOnlyFavorites,
@@ -369,6 +435,8 @@ document.addEventListener("DOMContentLoaded", () => {
         executeDeleteBook,
         toggleBookStatus,
         rateBook,
-        toggleFavorite
+        toggleFavorite,
+        toggleActiveDetailsBookStatus,
+        editActiveDetailsBook
     });
 });
