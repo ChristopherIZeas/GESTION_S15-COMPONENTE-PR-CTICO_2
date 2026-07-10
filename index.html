@@ -10,8 +10,23 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="dark-theme">
-    <div class="page-shell">
+<body class="dark-theme is-guest">
+    <section class="auth-screen" id="login-view">
+        <div class="auth-panel">
+            <div class="brand-block auth-brand">
+                <div class="brand-mark"><i class="fa-solid fa-book-open-reader"></i></div>
+                <h1 class="logo-text"><span>Biblio</span><span>Tech</span></h1>
+            </div>
+            <h2>Ingresa a tu biblioteca</h2>
+            <p>Tu catálogo se guarda en Firestore y queda asociado a tu cuenta de Google.</p>
+            <button id="google-login-btn" class="btn-primary google-login-btn" type="button">
+                <i class="fa-brands fa-google"></i>
+                <span>Continuar con Google</span>
+            </button>
+        </div>
+    </section>
+
+    <div class="page-shell" hidden>
         <header class="app-header">
             <div class="header-container">
                 <div class="brand-block">
@@ -25,10 +40,22 @@
                 </div>
 
                 <div class="header-tools">
-                    <button id="theme-toggle" class="theme-switch" aria-label="Alternar modo de color">
-                        <span class="theme-option theme-option-dark"><i class="fa-solid fa-moon"></i><span>Oscuro</span></span>
-                        <span class="theme-option theme-option-light"><i class="fa-regular fa-sun"></i><span>Claro</span></span>
-                    </button>
+                    <div id="theme-toggle" class="theme-toggle-group" aria-label="Seleccionar modo de color" role="group">
+                        <button type="button" class="theme-option theme-option-dark" data-theme="dark">
+                            <i class="fa-solid fa-moon"></i><span>Oscuro</span>
+                        </button>
+                        <button type="button" class="theme-option theme-option-light" data-theme="light">
+                            <i class="fa-regular fa-sun"></i><span>Claro</span>
+                        </button>
+                    </div>
+                    <div class="user-menu">
+                        <img id="user-avatar" class="user-avatar" alt="Foto de usuario">
+                        <div class="user-copy">
+                            <span id="user-name">Usuario</span>
+                            <small id="user-email"></small>
+                        </div>
+                        <button id="logout-btn" class="utility-chip icon-chip" aria-label="Cerrar sesión" type="button"><i class="fa-solid fa-right-from-bracket"></i></button>
+                    </div>
                     <button id="add-book-btn" class="btn-primary add-book-btn"><i class="fa-solid fa-circle-plus"></i><span>Agregar</span></button>
                 </div>
             </div>
@@ -271,11 +298,11 @@
 
     <div class="modal-overlay" id="reset-confirm-modal">
         <div class="modal-content modal-content-small">
-            <h3 class="modal-title centered-title">Restaurar catálogo</h3>
-            <p class="modal-copy">Se perderán todos los cambios guardados y volverás al catálogo base.</p>
+            <h3 class="modal-title centered-title">Vaciar catálogo</h3>
+            <p class="modal-copy">Se eliminarán todos los libros guardados en Firestore para tu usuario.</p>
             <div class="form-actions form-actions-centered">
                 <button type="button" class="btn-secondary" id="reset-confirm-cancel-btn">Cancelar</button>
-                <button type="button" class="btn-danger" id="reset-confirm-btn">Restaurar</button>
+                <button type="button" class="btn-danger" id="reset-confirm-btn">Vaciar</button>
             </div>
         </div>
     </div>
