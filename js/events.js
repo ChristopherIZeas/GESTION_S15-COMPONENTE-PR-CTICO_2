@@ -60,7 +60,6 @@ export function initEvents(handlers) {
     if (editBookForm) editBookForm.addEventListener("submit", handlers.handleEditBook);
 
     if (closeDetailsModalBtn) closeDetailsModalBtn.addEventListener("click", handlers.closeDetailsModal);
-    if (closeDetailsBottomBtn) closeDetailsBottomBtn.addEventListener("click", handlers.closeDetailsModal);
     if (detailsToggleStatusBtn) detailsToggleStatusBtn.addEventListener("click", handlers.toggleActiveDetailsBookStatus);
     if (detailsEditBtn) detailsEditBtn.addEventListener("click", handlers.editActiveDetailsBook);
 
