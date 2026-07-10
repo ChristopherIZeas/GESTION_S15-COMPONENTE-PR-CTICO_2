@@ -46,3 +46,10 @@ Cambio solicitado. Alternador de tema Claro y Oscuro con persistencia.
 Motivo del cambio. Mejorar la comodidad del usuario agregando la opción de alternar entre un tema visual claro y oscuro de manera dinámica, guardando su preferencia en localStorage.
 Responsable. Antigravity AI
 Fecha de aprobación. 2026-07-09
+
+---
+
+Cambio solicitado. Selector de diseño de vista (cuadrícula/lista).
+Motivo del cambio. Ofrecer al usuario flexibilidad en la visualización del catálogo permitiendo alternar dinámicamente entre un formato de cuadrícula (grid) y uno de lista, guardando la preferencia.
+Responsable. Antigravity AI
+Fecha de aprobación. 2026-07-09

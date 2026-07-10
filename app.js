@@ -255,6 +255,37 @@ function toggleTheme() {
     applyTheme(isLight ? "dark" : "light");
 }
 
+// Referencia al alternador de vista y funciones de vista
+const viewToggle = document.getElementById("view-toggle");
+
+function initView() {
+    const savedView = localStorage.getItem("biblio_view") || "grid";
+    if (savedView === "list") {
+        booksGrid.classList.remove("grid-view");
+        booksGrid.classList.add("list-view");
+        viewToggle.textContent = "⬜ Cuadrícula";
+    } else {
+        booksGrid.classList.remove("list-view");
+        booksGrid.classList.add("grid-view");
+        viewToggle.textContent = "📋 Lista";
+    }
+}
+
+function toggleView() {
+    const isGrid = booksGrid.classList.contains("grid-view");
+    if (isGrid) {
+        booksGrid.classList.remove("grid-view");
+        booksGrid.classList.add("list-view");
+        viewToggle.textContent = "⬜ Cuadrícula";
+        localStorage.setItem("biblio_view", "list");
+    } else {
+        booksGrid.classList.remove("list-view");
+        booksGrid.classList.add("grid-view");
+        viewToggle.textContent = "📋 Lista";
+        localStorage.setItem("biblio_view", "grid");
+    }
+}
+
 // Event Listeners
 searchInput.addEventListener("input", handleSearch);
 genreFilter.addEventListener("change", handleSearch);
@@ -266,6 +297,7 @@ addBookForm.addEventListener("submit", handleAddBook);
 confirmCancelBtn.addEventListener("click", closeConfirmModal);
 confirmDeleteBtn.addEventListener("click", executeDeleteBook);
 themeToggle.addEventListener("click", toggleTheme);
+viewToggle.addEventListener("click", toggleView);
 
 // Eventos en la cuadrícula de libros (Delegación de eventos)
 booksGrid.addEventListener("click", (e) => {
@@ -298,6 +330,7 @@ confirmModal.addEventListener("click", (e) => {
 // Inicialización de la aplicación
 document.addEventListener("DOMContentLoaded", () => {
     initTheme();
+    initView();
     updateGenreOptions();
     renderBooks(books);
 });
