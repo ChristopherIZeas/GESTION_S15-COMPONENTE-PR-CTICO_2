@@ -22,11 +22,17 @@ export function applyTheme(theme) {
     if (theme === "light") {
         document.body.classList.add("light-theme");
         document.body.classList.remove("dark-theme");
-        if (themeToggle) themeToggle.textContent = "🌙";
+        if (themeToggle) {
+            themeToggle.classList.add("is-light");
+            themeToggle.classList.remove("is-dark");
+        }
     } else {
         document.body.classList.add("dark-theme");
         document.body.classList.remove("light-theme");
-        if (themeToggle) themeToggle.textContent = "☀️";
+        if (themeToggle) {
+            themeToggle.classList.add("is-dark");
+            themeToggle.classList.remove("is-light");
+        }
     }
     localStorage.setItem("biblio_theme", theme);
 }
@@ -44,13 +50,13 @@ export function initView() {
             booksGrid.classList.remove("grid-view");
             booksGrid.classList.add("list-view");
         }
-        if (viewToggle) viewToggle.textContent = "⬜ Cuadrícula";
+        if (viewToggle) viewToggle.innerHTML = '<i class="fa-solid fa-list"></i>';
     } else {
         if (booksGrid) {
             booksGrid.classList.remove("list-view");
             booksGrid.classList.add("grid-view");
         }
-        if (viewToggle) viewToggle.textContent = "📋 Lista";
+        if (viewToggle) viewToggle.innerHTML = '<i class="fa-solid fa-grip"></i>';
     }
 }
 
@@ -60,12 +66,12 @@ export function toggleView() {
     if (isGrid) {
         booksGrid.classList.remove("grid-view");
         booksGrid.classList.add("list-view");
-        if (viewToggle) viewToggle.textContent = "⬜ Cuadrícula";
+        if (viewToggle) viewToggle.innerHTML = '<i class="fa-solid fa-list"></i>';
         localStorage.setItem("biblio_view", "list");
     } else {
         booksGrid.classList.remove("list-view");
         booksGrid.classList.add("grid-view");
-        if (viewToggle) viewToggle.textContent = "📋 Lista";
+        if (viewToggle) viewToggle.innerHTML = '<i class="fa-solid fa-grip"></i>';
         localStorage.setItem("biblio_view", "grid");
     }
 }
