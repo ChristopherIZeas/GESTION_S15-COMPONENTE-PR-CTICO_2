@@ -127,7 +127,6 @@ export function openDetailsModal(bookId) {
         if (detailsTitle) detailsTitle.textContent = book.title;
         if (detailsAuthor) detailsAuthor.textContent = `${book.author} · ${book.year}`;
         if (detailsGenre) detailsGenre.textContent = book.genre;
-        if (detailsYear) detailsYear.textContent = book.year;
         if (detailsRating) detailsRating.innerHTML = getStarsHtml(book.rating || 0);
         if (detailsCover) detailsCover.style.background = `linear-gradient(135deg, ${from}, ${to})`;
         
