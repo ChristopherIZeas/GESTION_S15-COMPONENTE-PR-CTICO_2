@@ -25,7 +25,6 @@ const detailsCover = detailsBookModal ? detailsBookModal.querySelector(".details
 const detailsTitle = document.getElementById("details-book-title");
 const detailsAuthor = document.getElementById("details-book-author");
 const detailsGenre = document.getElementById("details-book-genre");
-const detailsYear = document.getElementById("details-book-year");
 const detailsRating = document.getElementById("details-book-rating");
 const detailsBadge = document.getElementById("details-book-badge");
 const detailsDescription = document.getElementById("details-book-description");
