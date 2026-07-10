@@ -95,3 +95,10 @@ Cambio solicitado. Calificación de libros mediante estrellas interactiva.
 Motivo del cambio. Permitir a los usuarios calificar los libros en el catálogo con un puntaje de 1 a 5 estrellas directamente desde la tarjeta de cada libro, con persistencia y animaciones de interacción.
 Responsable. aalvarador8
 Fecha de aprobación. 2026-07-09
+
+---
+
+Cambio solicitado. Filtro por estado de disponibilidad (Todos / Disponibles / Prestados).
+Motivo del cambio. Habilitar la capacidad de filtrar dinámicamente los libros en el catálogo según si se encuentran prestados o disponibles.
+Responsable. aalvarador8
+Fecha de aprobación. 2026-07-09

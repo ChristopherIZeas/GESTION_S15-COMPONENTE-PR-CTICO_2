@@ -59,6 +59,7 @@ const closeModalBtn = document.getElementById("close-modal-btn");
 const cancelModalBtn = document.getElementById("cancel-modal-btn");
 const addBookForm = document.getElementById("add-book-form");
 const genreFilter = document.getElementById("genre-filter");
+const statusFilter = document.getElementById("status-filter");
 
 // Referencias del Dashboard de estadísticas
 const statsTotal = document.getElementById("stats-total");
@@ -156,6 +157,7 @@ function renderBooks(booksToRender) {
 function handleSearch() {
     const query = searchInput.value.toLowerCase().trim();
     const selectedGenre = genreFilter.value;
+    const selectedStatus = statusFilter.value;
     
     const filtered = books.filter(book => {
         const matchesQuery = (
@@ -164,7 +166,8 @@ function handleSearch() {
             book.genre.toLowerCase().includes(query)
         );
         const matchesGenre = selectedGenre === "all" || book.genre === selectedGenre;
-        return matchesQuery && matchesGenre;
+        const matchesStatus = selectedStatus === "all" || book.status === selectedStatus;
+        return matchesQuery && matchesGenre && matchesStatus;
     });
     
     renderBooks(filtered);
@@ -599,6 +602,7 @@ function toggleView() {
 // Event Listeners
 searchInput.addEventListener("input", handleSearch);
 genreFilter.addEventListener("change", handleSearch);
+statusFilter.addEventListener("change", handleSearch);
 addBookBtn.addEventListener("click", openModal);
 closeModalBtn.addEventListener("click", closeModal);
 cancelModalBtn.addEventListener("click", closeModal);
