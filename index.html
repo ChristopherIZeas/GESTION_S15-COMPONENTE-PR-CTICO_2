@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BiblioTech - Biblioteca Virtual</title>
+    <!-- Google Fonts: Outfit & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-theme">
+    <header class="app-header">
+        <div class="header-container">
+            <div class="logo-area">
+                <span class="logo-icon">📚</span>
+                <h1 class="logo-text">BiblioTech</h1>
+            </div>
+            
+            <div class="search-bar-container">
+                <input type="text" id="search-input" placeholder="Buscar por título, autor o género..." aria-label="Buscar libros">
+                <span class="search-icon">🔍</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <section class="section-header">
+            <h2 class="section-title">Catálogo de Libros</h2>
+            <div class="header-actions">
+                <!-- Se añadirán filtros e interactividad aquí en cambios futuros -->
+            </div>
+        </section>
+
+        <div class="books-container grid-view" id="books-grid">
+            <!-- Las tarjetas de libros se generarán dinámicamente aquí -->
+        </div>
+    </main>
+
+    <footer class="app-footer">
+        <p>&copy; 2026 BiblioTech. Todos los derechos reservados.</p>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
