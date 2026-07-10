@@ -70,6 +70,13 @@
                     <option value="available">Disponibles</option>
                     <option value="borrowed">Prestados</option>
                 </select>
+                <select id="sort-select" class="select-filter" aria-label="Ordenar libros por">
+                    <option value="title-asc">Título (A-Z)</option>
+                    <option value="title-desc">Título (Z-A)</option>
+                    <option value="year-desc">Año (Nuevo - Antiguo)</option>
+                    <option value="year-asc">Año (Antiguo - Nuevo)</option>
+                    <option value="rating-desc">Calificación (Mejor valorados)</option>
+                </select>
                 <button id="view-toggle" class="btn-secondary" aria-label="Alternar vista cuadrícula o lista">📋 Lista</button>
                 <button id="reset-catalog-btn" class="btn-danger-outline" aria-label="Restaurar catálogo inicial">🔄 Restaurar</button>
                 <button id="add-book-btn" class="btn-primary">➕ Agregar Libro</button>

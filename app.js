@@ -60,6 +60,7 @@ const cancelModalBtn = document.getElementById("cancel-modal-btn");
 const addBookForm = document.getElementById("add-book-form");
 const genreFilter = document.getElementById("genre-filter");
 const statusFilter = document.getElementById("status-filter");
+const sortSelect = document.getElementById("sort-select");
 
 // Referencias del Dashboard de estadísticas
 const statsTotal = document.getElementById("stats-total");
@@ -174,6 +175,22 @@ function handleSearch() {
         const matchesGenre = selectedGenre === "all" || book.genre === selectedGenre;
         const matchesStatus = selectedStatus === "all" || book.status === selectedStatus;
         return matchesQuery && matchesGenre && matchesStatus;
+    });
+    
+    const sortBy = sortSelect.value;
+    filtered.sort((a, b) => {
+        if (sortBy === "title-asc") {
+            return a.title.localeCompare(b.title);
+        } else if (sortBy === "title-desc") {
+            return b.title.localeCompare(a.title);
+        } else if (sortBy === "year-desc") {
+            return b.year - a.year;
+        } else if (sortBy === "year-asc") {
+            return a.year - b.year;
+        } else if (sortBy === "rating-desc") {
+            return (b.rating || 0) - (a.rating || 0);
+        }
+        return 0;
     });
     
     renderBooks(filtered);
@@ -564,6 +581,7 @@ function executeResetCatalog() {
     searchInput.value = "";
     genreFilter.value = "all";
     statusFilter.value = "all";
+    sortSelect.value = "title-asc";
     
     updateGenreOptions();
     handleSearch();
@@ -634,6 +652,7 @@ function toggleView() {
 searchInput.addEventListener("input", handleSearch);
 genreFilter.addEventListener("change", handleSearch);
 statusFilter.addEventListener("change", handleSearch);
+sortSelect.addEventListener("change", handleSearch);
 addBookBtn.addEventListener("click", openModal);
 closeModalBtn.addEventListener("click", closeModal);
 cancelModalBtn.addEventListener("click", closeModal);
