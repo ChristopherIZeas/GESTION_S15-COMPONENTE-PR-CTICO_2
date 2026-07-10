@@ -42,8 +42,8 @@ const initialBooks = [
     }
 ];
 
-// Estado global de la aplicación (inicialmente usa los datos mock)
-let books = [...initialBooks];
+// Estado global de la aplicación (intenta cargar de localStorage, si no usa mock data)
+let books = JSON.parse(localStorage.getItem("biblio_books")) || [...initialBooks];
 
 // Referencias a elementos del DOM
 const booksGrid = document.getElementById("books-grid");
@@ -161,6 +161,13 @@ function closeModal() {
     addBookForm.reset();
 }
 
+/**
+ * Guarda el estado actual de los libros en localStorage
+ */
+function saveToLocalStorage() {
+    localStorage.setItem("biblio_books", JSON.stringify(books));
+}
+
 function handleAddBook(e) {
     e.preventDefault();
     
@@ -174,6 +181,7 @@ function handleAddBook(e) {
     };
 
     books.push(newBook);
+    saveToLocalStorage();
     updateGenreOptions();
     renderBooks(books);
     closeModal();
@@ -187,6 +195,7 @@ function toggleBookStatus(bookId) {
     const book = books.find(b => b.id === bookId);
     if (book) {
         book.status = book.status === "available" ? "borrowed" : "available";
+        saveToLocalStorage();
         handleSearch(); // Recargar respetando filtros
     }
 }
