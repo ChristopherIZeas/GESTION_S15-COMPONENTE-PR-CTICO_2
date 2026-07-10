@@ -53,3 +53,10 @@ Cambio solicitado. Selector de diseño de vista (cuadrícula/lista).
 Motivo del cambio. Ofrecer al usuario flexibilidad en la visualización del catálogo permitiendo alternar dinámicamente entre un formato de cuadrícula (grid) y uno de lista, guardando la preferencia.
 Responsable. Antigravity AI
 Fecha de aprobación. 2026-07-09
+
+---
+
+Cambio solicitado. Panel de estadísticas rápidas de la biblioteca.
+Motivo del cambio. Visualizar en tiempo real métricas clave del catálogo (total de libros, cantidad de disponibles y prestados, y el porcentaje de disponibilidad) para ofrecer una visión general del inventario.
+Responsable. Antigravity AI
+Fecha de aprobación. 2026-07-09

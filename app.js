@@ -55,6 +55,12 @@ const cancelModalBtn = document.getElementById("cancel-modal-btn");
 const addBookForm = document.getElementById("add-book-form");
 const genreFilter = document.getElementById("genre-filter");
 
+// Referencias del Dashboard de estadísticas
+const statsTotal = document.getElementById("stats-total");
+const statsAvailable = document.getElementById("stats-available");
+const statsBorrowed = document.getElementById("stats-borrowed");
+const statsPercentage = document.getElementById("stats-percentage");
+
 // Inputs del formulario
 const titleInput = document.getElementById("book-title-input");
 const authorInput = document.getElementById("book-author-input");
@@ -169,6 +175,21 @@ function saveToLocalStorage() {
     localStorage.setItem("biblio_books", JSON.stringify(books));
 }
 
+/**
+ * Calcula y actualiza las estadísticas de la biblioteca en el dashboard
+ */
+function updateStatistics() {
+    const total = books.length;
+    const available = books.filter(b => b.status === "available").length;
+    const borrowed = total - available;
+    const percentage = total > 0 ? Math.round((available / total) * 100) : 0;
+
+    statsTotal.textContent = total;
+    statsAvailable.textContent = available;
+    statsBorrowed.textContent = borrowed;
+    statsPercentage.textContent = `${percentage}%`;
+}
+
 function handleAddBook(e) {
     e.preventDefault();
     
@@ -185,6 +206,7 @@ function handleAddBook(e) {
     saveToLocalStorage();
     updateGenreOptions();
     renderBooks(books);
+    updateStatistics();
     closeModal();
 }
 
@@ -204,6 +226,7 @@ function toggleBookStatus(bookId) {
         book.status = book.status === "available" ? "borrowed" : "available";
         saveToLocalStorage();
         handleSearch(); // Recargar respetando filtros
+        updateStatistics();
     }
 }
 
@@ -213,6 +236,7 @@ function openConfirmModal(bookId) {
     confirmModal.classList.add("active");
 }
 
+// Cerrar confirmación
 function closeConfirmModal() {
     bookIdToDelete = null;
     confirmModal.classList.remove("active");
@@ -224,6 +248,7 @@ function executeDeleteBook() {
         saveToLocalStorage();
         updateGenreOptions();
         handleSearch();
+        updateStatistics();
         closeConfirmModal();
     }
 }
@@ -333,4 +358,5 @@ document.addEventListener("DOMContentLoaded", () => {
     initView();
     updateGenreOptions();
     renderBooks(books);
+    updateStatistics();
 });
