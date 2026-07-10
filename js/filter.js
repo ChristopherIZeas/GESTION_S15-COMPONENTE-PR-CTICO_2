@@ -6,6 +6,7 @@ const searchInput = document.getElementById("search-input");
 const genreFilter = document.getElementById("genre-filter");
 const statusFilter = document.getElementById("status-filter");
 const sortSelect = document.getElementById("sort-select");
+const resultSummary = document.getElementById("result-summary");
 
 /**
  * Filtra los libros en tiempo real basados en la búsqueda del usuario y el género seleccionado
@@ -46,6 +47,12 @@ export function handleSearch() {
         }
         return 0;
     });
+
+    const available = filtered.filter(book => book.status === "available").length;
+    const borrowed = filtered.length - available;
+    if (resultSummary) {
+        resultSummary.textContent = `${filtered.length} resultados · ${available} disponibles · ${borrowed} prestados`;
+    }
     
     renderBooks(filtered);
 }
