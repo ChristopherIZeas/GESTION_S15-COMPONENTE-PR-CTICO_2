@@ -60,3 +60,10 @@ Cambio solicitado. Panel de estadísticas rápidas de la biblioteca.
 Motivo del cambio. Visualizar en tiempo real métricas clave del catálogo (total de libros, cantidad de disponibles y prestados, y el porcentaje de disponibilidad) para ofrecer una visión general del inventario.
 Responsable. Antigravity AI
 Fecha de aprobación. 2026-07-09
+
+---
+
+Cambio solicitado. Validación avanzada de formularios y notificaciones emergentes (toasts).
+Motivo del cambio. Validar que no se agreguen años futuros ni libros duplicados en el formulario y ofrecer feedback visual mediante notificaciones temporales (toasts) tras cada acción exitosa o error.
+Responsable. Antigravity AI
+Fecha de aprobación. 2026-07-09

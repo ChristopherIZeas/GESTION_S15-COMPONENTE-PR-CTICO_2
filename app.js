@@ -61,6 +61,9 @@ const statsAvailable = document.getElementById("stats-available");
 const statsBorrowed = document.getElementById("stats-borrowed");
 const statsPercentage = document.getElementById("stats-percentage");
 
+// Referencia del contenedor Toast
+const toastContainer = document.getElementById("toast-container");
+
 // Inputs del formulario
 const titleInput = document.getElementById("book-title-input");
 const authorInput = document.getElementById("book-author-input");
@@ -190,15 +193,74 @@ function updateStatistics() {
     statsPercentage.textContent = `${percentage}%`;
 }
 
+/**
+ * Muestra una notificación toast dinámica
+ * @param {string} message - Mensaje a mostrar
+ * @param {string} type - Tipo de toast ("success" | "error" | "info")
+ */
+function showToast(message, type = "success") {
+    const toast = document.createElement("div");
+    toast.className = `toast toast-${type}`;
+    toast.innerHTML = `
+        <span class="toast-message">${message}</span>
+        <button class="toast-close" aria-label="Cerrar notificación">&times;</button>
+    `;
+    toastContainer.appendChild(toast);
+    
+    // Forzar reflow para animación
+    setTimeout(() => toast.classList.add("show"), 10);
+    
+    const autoClose = setTimeout(() => {
+        dismissToast(toast);
+    }, 4000);
+    
+    toast.querySelector(".toast-close").addEventListener("click", () => {
+        clearTimeout(autoClose);
+        dismissToast(toast);
+    });
+}
+
+function dismissToast(toast) {
+    toast.classList.remove("show");
+    toast.addEventListener("transitionend", () => {
+        toast.remove();
+    });
+}
+
 function handleAddBook(e) {
     e.preventDefault();
     
+    const title = titleInput.value.trim();
+    const author = authorInput.value.trim();
+    const genre = genreInput.value.trim();
+    const year = parseInt(yearInput.value);
+    
+    // Validar longitudes
+    if (title.length < 2 || author.length < 2) {
+        showToast("El título y el autor deben tener al menos 2 caracteres.", "error");
+        return;
+    }
+    
+    // Validar año no futuro
+    const currentYear = new Date().getFullYear();
+    if (year > currentYear) {
+        showToast(`El año de publicación no puede ser mayor al año actual (${currentYear}).`, "error");
+        return;
+    }
+    
+    // Validar duplicados
+    const isDuplicate = books.some(b => b.title.toLowerCase() === title.toLowerCase() && b.author.toLowerCase() === author.toLowerCase());
+    if (isDuplicate) {
+        showToast("Este libro ya está registrado en la biblioteca.", "error");
+        return;
+    }
+    
     const newBook = {
         id: books.length ? Math.max(...books.map(b => b.id)) + 1 : 1,
-        title: titleInput.value.trim(),
-        author: authorInput.value.trim(),
-        genre: genreInput.value.trim(),
-        year: parseInt(yearInput.value),
+        title,
+        author,
+        genre,
+        year,
         status: "available"
     };
 
@@ -207,6 +269,7 @@ function handleAddBook(e) {
     updateGenreOptions();
     renderBooks(books);
     updateStatistics();
+    showToast(`Libro "${title}" agregado con éxito.`, "success");
     closeModal();
 }
 
@@ -227,6 +290,9 @@ function toggleBookStatus(bookId) {
         saveToLocalStorage();
         handleSearch(); // Recargar respetando filtros
         updateStatistics();
+        
+        const actionText = book.status === "borrowed" ? "prestado" : "devuelto";
+        showToast(`Libro "${book.title}" ${actionText} con éxito.`, "info");
     }
 }
 
@@ -244,12 +310,19 @@ function closeConfirmModal() {
 
 function executeDeleteBook() {
     if (bookIdToDelete !== null) {
+        const book = books.find(b => b.id === bookIdToDelete);
+        const title = book ? book.title : "";
+        
         books = books.filter(b => b.id !== bookIdToDelete);
         saveToLocalStorage();
         updateGenreOptions();
         handleSearch();
         updateStatistics();
         closeConfirmModal();
+        
+        if (title) {
+            showToast(`Libro "${title}" eliminado con éxito.`, "info");
+        }
     }
 }
 
