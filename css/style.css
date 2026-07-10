@@ -455,7 +455,6 @@ body.light-theme .theme-switch.is-light .theme-option-dark {
 .eyebrow,
 .book-author,
 .book-year,
-.details-meta span,
 .modal-copy {
     color: var(--text-secondary);
 }
