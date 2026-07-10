@@ -144,3 +144,10 @@ Cambio solicitado. Configuración modular básica (ES Modules).
 Motivo del cambio. Habilitar la importación y exportación de módulos de JavaScript en el navegador convirtiendo el script principal a type="module" en index.html y estructurando los nuevos ficheros en el directorio js/.
 Responsable. ikisita2004
 Fecha de aprobación. 2026-07-09
+
+---
+
+Cambio solicitado. Extracción de datos y estado global (js/state.js).
+Motivo del cambio. Extraer los datos iniciales (mock data) y las variables de estado reactivo global del catálogo a un archivo modular separado, exportando getters y setters de acceso.
+Responsable. ikisita2004
+Fecha de aprobación. 2026-07-09

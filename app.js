@@ -1,54 +1,22 @@
-// Datos iniciales de prueba (Mock Data)
-const initialBooks = [
-    {
-        id: 1,
-        title: "Cien años de soledad",
-        author: "Gabriel García Márquez",
-        genre: "Realismo Mágico",
-        year: 1967,
-        status: "available", // available | borrowed
-        rating: 5
-    },
-    {
-        id: 2,
-        title: "Don Quijote de la Mancha",
-        author: "Miguel de Cervantes",
-        genre: "Novela",
-        year: 1605,
-        status: "available",
-        rating: 4
-    },
-    {
-        id: 3,
-        title: "1984",
-        author: "George Orwell",
-        genre: "Distopía",
-        year: 1949,
-        status: "borrowed",
-        rating: 4
-    },
-    {
-        id: 4,
-        title: "El principito",
-        author: "Antoine de Saint-Exupéry",
-        genre: "Fantasía",
-        year: 1943,
-        status: "available",
-        rating: 5
-    },
-    {
-        id: 5,
-        title: "Breve historia del tiempo",
-        author: "Stephen Hawking",
-        genre: "Divulgación Científica",
-        year: 1988,
-        status: "borrowed",
-        rating: 3
-    }
-];
+import { getBooks, setBooks, getShowOnlyFavorites, setShowOnlyFavorites, initialBooks } from "./js/state.js";
 
-// Estado global de la aplicación (intenta cargar de localStorage, si no usa mock data)
-let books = JSON.parse(localStorage.getItem("biblio_books")) || [...initialBooks];
+// Vincular getters y setters globales para retrocompatibilidad modular
+Object.defineProperty(window, "books", {
+    get() { return getBooks(); },
+    set(val) { setBooks(val); },
+    configurable: true
+});
+
+Object.defineProperty(window, "showOnlyFavorites", {
+    get() { return getShowOnlyFavorites(); },
+    set(val) { setShowOnlyFavorites(val); },
+    configurable: true
+});
+
+Object.defineProperty(window, "initialBooks", {
+    get() { return initialBooks; },
+    configurable: true
+});
 
 // Referencias a elementos del DOM
 const booksGrid = document.getElementById("books-grid");
@@ -109,7 +77,6 @@ const resetConfirmBtn = document.getElementById("reset-confirm-btn");
 
 // Referencia del botón de favoritos
 const favoritesToggleBtn = document.getElementById("favorites-toggle-btn");
-let showOnlyFavorites = false;
 
 /**
  * Renderiza la lista de libros en la cuadrícula del DOM
