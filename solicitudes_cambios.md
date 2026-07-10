@@ -32,3 +32,10 @@ Cambio solicitado. Persistencia de datos mediante LocalStorage.
 Motivo del cambio. Garantizar que la lista de libros y sus estados de préstamo permanezcan guardados de manera persistente en el navegador del usuario al recargar la página.
 Responsable. Antigravity AI
 Fecha de aprobación. 2026-07-09
+
+---
+
+Cambio solicitado. Modal de confirmación estilizado para la eliminación de libros.
+Motivo del cambio. Evitar eliminaciones accidentales de libros mediante la presentación de un cuadro de diálogo modal personalizado y estilizado en lugar del confirm de alerta nativo del navegador.
+Responsable. Antigravity AI
+Fecha de aprobación. 2026-07-09

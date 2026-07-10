@@ -505,3 +505,43 @@ body {
     gap: 1rem;
     align-items: center;
 }
+
+/* Botones de peligro y eliminar */
+.btn-danger {
+    background-color: var(--danger-color);
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.65rem 1rem;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.btn-danger:hover {
+    background-color: #dc2626;
+}
+
+.btn-danger:active {
+    transform: scale(0.98);
+}
+
+.btn-danger-outline {
+    background: none;
+    border: 1px solid var(--border-color);
+    color: var(--danger-color);
+    border-radius: 8px;
+    padding: 0.65rem;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-danger-outline:hover {
+    background-color: rgba(239, 68, 68, 0.1);
+    border-color: var(--danger-color);
+}

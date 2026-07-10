@@ -101,6 +101,7 @@ function renderBooks(booksToRender) {
             </div>
             <div class="card-actions">
                 <button class="btn-primary toggle-status-btn">${buttonText}</button>
+                <button class="btn-danger-outline delete-book-btn" aria-label="Eliminar libro">🗑️</button>
             </div>
         `;
 
@@ -187,6 +188,12 @@ function handleAddBook(e) {
     closeModal();
 }
 
+// Referencias del modal de confirmación
+const confirmModal = document.getElementById("confirm-modal");
+const confirmCancelBtn = document.getElementById("confirm-cancel-btn");
+const confirmDeleteBtn = document.getElementById("confirm-delete-btn");
+let bookIdToDelete = null;
+
 /**
  * Alterna el estado de préstamo de un libro
  * @param {number} bookId - ID del libro a alternar
@@ -200,6 +207,27 @@ function toggleBookStatus(bookId) {
     }
 }
 
+// Funciones para el modal de confirmación
+function openConfirmModal(bookId) {
+    bookIdToDelete = bookId;
+    confirmModal.classList.add("active");
+}
+
+function closeConfirmModal() {
+    bookIdToDelete = null;
+    confirmModal.classList.remove("active");
+}
+
+function executeDeleteBook() {
+    if (bookIdToDelete !== null) {
+        books = books.filter(b => b.id !== bookIdToDelete);
+        saveToLocalStorage();
+        updateGenreOptions();
+        handleSearch();
+        closeConfirmModal();
+    }
+}
+
 // Event Listeners
 searchInput.addEventListener("input", handleSearch);
 genreFilter.addEventListener("change", handleSearch);
@@ -208,21 +236,34 @@ closeModalBtn.addEventListener("click", closeModal);
 cancelModalBtn.addEventListener("click", closeModal);
 addBookForm.addEventListener("submit", handleAddBook);
 
-// Alternar estado de préstamo/devolución al hacer click
+confirmCancelBtn.addEventListener("click", closeConfirmModal);
+confirmDeleteBtn.addEventListener("click", executeDeleteBook);
+
+// Eventos en la cuadrícula de libros (Delegación de eventos)
 booksGrid.addEventListener("click", (e) => {
+    const card = e.target.closest(".book-card");
+    if (!card) return;
+    
+    const bookId = parseInt(card.dataset.id);
+    
     if (e.target.classList.contains("toggle-status-btn")) {
-        const card = e.target.closest(".book-card");
-        if (card) {
-            const bookId = parseInt(card.dataset.id);
-            toggleBookStatus(bookId);
-        }
+        toggleBookStatus(bookId);
+    } else if (e.target.closest(".delete-book-btn")) {
+        openConfirmModal(bookId);
     }
 });
 
-// Cerrar modal al hacer click fuera del contenido
+// Cerrar modal de adición al hacer click fuera
 addBookModal.addEventListener("click", (e) => {
     if (e.target === addBookModal) {
         closeModal();
+    }
+});
+
+// Cerrar modal de confirmación al hacer click fuera
+confirmModal.addEventListener("click", (e) => {
+    if (e.target === confirmModal) {
+        closeConfirmModal();
     }
 });
 

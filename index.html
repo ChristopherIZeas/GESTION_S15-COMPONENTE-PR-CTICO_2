@@ -73,6 +73,18 @@
         </div>
     </div>
 
+    <!-- Modal de Confirmación para Eliminar -->
+    <div class="modal-overlay" id="confirm-modal">
+        <div class="modal-content" style="max-width: 400px; text-align: center;">
+            <h3 class="modal-title" style="margin-bottom: 1rem;">¿Eliminar Libro?</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">¿Estás seguro de que deseas eliminar este libro? Esta acción no se puede deshacer.</p>
+            <div class="form-actions" style="justify-content: center;">
+                <button type="button" class="btn-secondary" id="confirm-cancel-btn">Cancelar</button>
+                <button type="button" class="btn-danger" id="confirm-delete-btn">Eliminar</button>
+            </div>
+        </div>
+    </div>
+
     <footer class="app-footer">
         <p>&copy; 2026 BiblioTech. Todos los derechos reservados.</p>
     </footer>
