@@ -14,7 +14,6 @@ export function initEvents(handlers) {
     const editBookForm = document.getElementById("edit-book-form");
 
     const closeDetailsModalBtn = document.getElementById("close-details-modal-btn");
-    const closeDetailsBottomBtn = document.getElementById("close-details-bottom-btn");
 
     const resetCatalogBtn = document.getElementById("reset-catalog-btn");
     const resetConfirmCancelBtn = document.getElementById("reset-confirm-cancel-btn");
