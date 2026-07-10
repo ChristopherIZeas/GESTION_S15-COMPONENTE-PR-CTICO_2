@@ -70,6 +70,17 @@ const authorInput = document.getElementById("book-author-input");
 const genreInput = document.getElementById("book-genre-input");
 const yearInput = document.getElementById("book-year-input");
 
+// Referencias del modal de edición
+const editBookModal = document.getElementById("edit-book-modal");
+const closeEditModalBtn = document.getElementById("close-edit-modal-btn");
+const cancelEditModalBtn = document.getElementById("cancel-edit-modal-btn");
+const editBookForm = document.getElementById("edit-book-form");
+const editBookId = document.getElementById("edit-book-id");
+const editTitleInput = document.getElementById("edit-book-title-input");
+const editAuthorInput = document.getElementById("edit-book-author-input");
+const editGenreInput = document.getElementById("edit-book-genre-input");
+const editYearInput = document.getElementById("edit-book-year-input");
+
 /**
  * Renderiza la lista de libros en la cuadrícula del DOM
  * @param {Array} booksToRender - Lista de libros a renderizar
@@ -110,6 +121,7 @@ function renderBooks(booksToRender) {
             </div>
             <div class="card-actions">
                 <button class="btn-primary toggle-status-btn">${buttonText}</button>
+                <button class="btn-secondary edit-book-btn" aria-label="Editar libro">✏️</button>
                 <button class="btn-danger-outline delete-book-btn" aria-label="Eliminar libro">🗑️</button>
             </div>
         `;
@@ -169,6 +181,70 @@ function openModal() {
 function closeModal() {
     addBookModal.classList.remove("active");
     addBookForm.reset();
+}
+
+// Funciones para el Modal de Edición
+function openEditModal(bookId) {
+    const book = books.find(b => b.id === bookId);
+    if (book) {
+        editBookId.value = book.id;
+        editTitleInput.value = book.title;
+        editAuthorInput.value = book.author;
+        editGenreInput.value = book.genre;
+        editYearInput.value = book.year;
+        editBookModal.classList.add("active");
+    }
+}
+
+function closeEditModal() {
+    editBookModal.classList.remove("active");
+    editBookForm.reset();
+}
+
+function handleEditBook(e) {
+    e.preventDefault();
+    
+    const id = parseInt(editBookId.value);
+    const title = editTitleInput.value.trim();
+    const author = editAuthorInput.value.trim();
+    const genre = editGenreInput.value.trim();
+    const year = parseInt(editYearInput.value);
+    
+    // Validar longitudes
+    if (title.length < 2 || author.length < 2) {
+        showToast("El título y el autor deben tener al menos 2 caracteres.", "error");
+        return;
+    }
+    
+    // Validar año no futuro
+    const currentYear = new Date().getFullYear();
+    if (year > currentYear) {
+        showToast(`El año de publicación no puede ser mayor al año actual (${currentYear}).`, "error");
+        return;
+    }
+    
+    // Validar duplicados (excluyendo el libro actual)
+    const isDuplicate = books.some(b => b.id !== id && b.title.toLowerCase() === title.toLowerCase() && b.author.toLowerCase() === author.toLowerCase());
+    if (isDuplicate) {
+        showToast("Ya existe otro libro registrado con el mismo título y autor.", "error");
+        return;
+    }
+    
+    // Actualizar libro
+    const bookIndex = books.findIndex(b => b.id === id);
+    if (bookIndex !== -1) {
+        books[bookIndex].title = title;
+        books[bookIndex].author = author;
+        books[bookIndex].genre = genre;
+        books[bookIndex].year = year;
+        
+        saveToLocalStorage();
+        updateGenreOptions();
+        handleSearch();
+        updateStatistics();
+        showToast(`Libro "${title}" actualizado con éxito.`, "success");
+        closeEditModal();
+    }
 }
 
 /**
@@ -392,6 +468,10 @@ closeModalBtn.addEventListener("click", closeModal);
 cancelModalBtn.addEventListener("click", closeModal);
 addBookForm.addEventListener("submit", handleAddBook);
 
+closeEditModalBtn.addEventListener("click", closeEditModal);
+cancelEditModalBtn.addEventListener("click", closeEditModal);
+editBookForm.addEventListener("submit", handleEditBook);
+
 confirmCancelBtn.addEventListener("click", closeConfirmModal);
 confirmDeleteBtn.addEventListener("click", executeDeleteBook);
 themeToggle.addEventListener("click", toggleTheme);
@@ -406,6 +486,8 @@ booksGrid.addEventListener("click", (e) => {
     
     if (e.target.classList.contains("toggle-status-btn")) {
         toggleBookStatus(bookId);
+    } else if (e.target.closest(".edit-book-btn")) {
+        openEditModal(bookId);
     } else if (e.target.closest(".delete-book-btn")) {
         openConfirmModal(bookId);
     }
@@ -415,6 +497,13 @@ booksGrid.addEventListener("click", (e) => {
 addBookModal.addEventListener("click", (e) => {
     if (e.target === addBookModal) {
         closeModal();
+    }
+});
+
+// Cerrar modal de edición al hacer click fuera
+editBookModal.addEventListener("click", (e) => {
+    if (e.target === editBookModal) {
+        closeEditModal();
     }
 });
 

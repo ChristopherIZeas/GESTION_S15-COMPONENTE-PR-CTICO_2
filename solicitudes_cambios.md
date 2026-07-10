@@ -67,3 +67,10 @@ Cambio solicitado. Validación avanzada de formularios y notificaciones emergent
 Motivo del cambio. Validar que no se agreguen años futuros ni libros duplicados en el formulario y ofrecer feedback visual mediante notificaciones temporales (toasts) tras cada acción exitosa o error.
 Responsable. Antigravity AI
 Fecha de aprobación. 2026-07-09
+
+---
+
+Cambio solicitado. Modificación y edición de detalles de libros.
+Motivo del cambio. Habilitar la edición de detalles de libros registrados en la biblioteca (título, autor, género y año) mediante una ventana modal dedicada y validada.
+Responsable. aalvarador8
+Fecha de aprobación. 2026-07-09
