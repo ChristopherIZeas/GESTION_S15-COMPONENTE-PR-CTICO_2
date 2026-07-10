@@ -88,3 +88,10 @@ Cambio solicitado. Selección inteligente de género en formularios (dropdown + 
 Motivo del cambio. Evitar inconsistencias en los nombres de los géneros al forzar al usuario a seleccionar de una lista existente o elegir la opción "Otro" para crear uno nuevo dinámicamente.
 Responsable. aalvarador8
 Fecha de aprobación. 2026-07-09
+
+---
+
+Cambio solicitado. Calificación de libros mediante estrellas interactiva.
+Motivo del cambio. Permitir a los usuarios calificar los libros en el catálogo con un puntaje de 1 a 5 estrellas directamente desde la tarjeta de cada libro, con persistencia y animaciones de interacción.
+Responsable. aalvarador8
+Fecha de aprobación. 2026-07-09

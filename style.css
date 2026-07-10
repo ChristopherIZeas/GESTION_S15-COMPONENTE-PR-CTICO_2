@@ -774,3 +774,26 @@ body {
 .toast-close:hover {
     color: var(--text-primary);
 }
+
+/* Calificación por estrellas */
+.book-rating {
+    display: flex;
+    gap: 0.25rem;
+    margin-bottom: 0.75rem;
+    font-size: 1.25rem;
+    user-select: none;
+}
+
+.star {
+    color: var(--border-color);
+    cursor: pointer;
+    transition: color var(--transition-fast), transform var(--transition-fast);
+}
+
+.star.filled {
+    color: #f59e0b;
+}
+
+.star:hover {
+    transform: scale(1.2);
+}

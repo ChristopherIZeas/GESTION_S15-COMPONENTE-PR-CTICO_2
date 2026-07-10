@@ -6,7 +6,8 @@ const initialBooks = [
         author: "Gabriel García Márquez",
         genre: "Realismo Mágico",
         year: 1967,
-        status: "available" // available | borrowed
+        status: "available", // available | borrowed
+        rating: 5
     },
     {
         id: 2,
@@ -14,7 +15,8 @@ const initialBooks = [
         author: "Miguel de Cervantes",
         genre: "Novela",
         year: 1605,
-        status: "available"
+        status: "available",
+        rating: 4
     },
     {
         id: 3,
@@ -22,7 +24,8 @@ const initialBooks = [
         author: "George Orwell",
         genre: "Distopía",
         year: 1949,
-        status: "borrowed"
+        status: "borrowed",
+        rating: 4
     },
     {
         id: 4,
@@ -30,7 +33,8 @@ const initialBooks = [
         author: "Antoine de Saint-Exupéry",
         genre: "Fantasía",
         year: 1943,
-        status: "available"
+        status: "available",
+        rating: 5
     },
     {
         id: 5,
@@ -38,7 +42,8 @@ const initialBooks = [
         author: "Stephen Hawking",
         genre: "Divulgación Científica",
         year: 1988,
-        status: "borrowed"
+        status: "borrowed",
+        rating: 3
     }
 ];
 
@@ -121,12 +126,14 @@ function renderBooks(booksToRender) {
         const badgeClass = isAvailable ? "badge-available" : "badge-borrowed";
         const badgeText = isAvailable ? "Disponible" : "Prestado";
         const buttonText = isAvailable ? "Prestar" : "Devolver";
+        const ratingHtml = getStarsHtml(book.rating || 0);
 
         bookCard.innerHTML = `
             <div class="book-info">
                 <span class="book-badge ${badgeClass}">${badgeText}</span>
                 <h3 class="book-title" title="${book.title}">${book.title}</h3>
                 <p class="book-author">por ${book.author}</p>
+                ${ratingHtml}
                 <div class="book-meta-details">
                     <span>${book.genre}</span>
                     <span>${book.year}</span>
@@ -336,6 +343,34 @@ function openDetailsModal(bookId) {
 
 function closeDetailsModal() {
     detailsBookModal.classList.remove("active");
+}
+
+/**
+ * Genera el marcado HTML de las estrellas de calificación
+ * @param {number} rating - Calificación (1 a 5)
+ */
+function getStarsHtml(rating) {
+    let stars = "";
+    for (let i = 1; i <= 5; i++) {
+        const starClass = i <= rating ? "star filled" : "star";
+        stars += `<span class="${starClass}" data-value="${i}">★</span>`;
+    }
+    return `<div class="book-rating" aria-label="Calificación: ${rating} estrellas">${stars}</div>`;
+}
+
+/**
+ * Califica un libro y actualiza la vista y el almacenamiento local
+ * @param {number} bookId - ID del libro
+ * @param {number} ratingValue - Calificación asignada
+ */
+function rateBook(bookId, ratingValue) {
+    const book = books.find(b => b.id === bookId);
+    if (book) {
+        book.rating = ratingValue;
+        saveToLocalStorage();
+        handleSearch(); // Recargar respetando filtros actuales
+        showToast(`Calificaste "${book.title}" con ${ratingValue} estrellas.`, "success");
+    }
 }
 
 /**
@@ -621,6 +656,9 @@ booksGrid.addEventListener("click", (e) => {
         openEditModal(bookId);
     } else if (e.target.closest(".delete-book-btn")) {
         openConfirmModal(bookId);
+    } else if (e.target.classList.contains("star")) {
+        const ratingVal = parseInt(e.target.dataset.value);
+        rateBook(bookId, ratingVal);
     }
 });
 
