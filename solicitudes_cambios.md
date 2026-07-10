@@ -137,3 +137,10 @@ Cambio solicitado. Animaciones de transición fluidas en la UI (micro-interaccio
 Motivo del cambio. Elevar la calidad del diseño visual con animaciones de entrada escalonadas (stagger) para las tarjetas de libros y efectos de escala activos al presionar los botones.
 Responsable. aalvarador8
 Fecha de aprobación. 2026-07-09
+
+---
+
+Cambio solicitado. Configuración modular básica (ES Modules).
+Motivo del cambio. Habilitar la importación y exportación de módulos de JavaScript en el navegador convirtiendo el script principal a type="module" en index.html y estructurando los nuevos ficheros en el directorio js/.
+Responsable. ikisita2004
+Fecha de aprobación. 2026-07-09
