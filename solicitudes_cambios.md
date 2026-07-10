@@ -200,3 +200,10 @@ Cambio solicitado. Desacoplamiento de Controladores de Eventos (js/events.js).
 Motivo del cambio. Agrupar la suscripción a todos los listeners del DOM, delegación de clicks en la cuadrícula de libros y el cierre automático de modales al presionar fuera de ellos en una sola rutina de inicialización de eventos modularizada.
 Responsable. ikisita2004
 Fecha de aprobación. 2026-07-09
+
+---
+
+Cambio solicitado. Consolidación y Simplificación de app.js.
+Motivo del cambio. Simplificar app.js como el orquestador y punto de entrada de la aplicación, removiendo referencias de selectores globales de DOM no usadas y estructurando limpiamente las importaciones.
+Responsable. ikisita2004
+Fecha de aprobación. 2026-07-09

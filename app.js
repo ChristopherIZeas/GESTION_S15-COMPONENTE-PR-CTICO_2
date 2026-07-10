@@ -61,64 +61,14 @@ Object.defineProperty(window, "initialBooks", {
     configurable: true
 });
 
-// Referencias a elementos del DOM
-const addBookBtn = document.getElementById("add-book-btn");
-const addBookModal = document.getElementById("add-book-modal");
-const closeModalBtn = document.getElementById("close-modal-btn");
-const cancelModalBtn = document.getElementById("cancel-modal-btn");
-const addBookForm = document.getElementById("add-book-form");
-
-
-
-
-
-// Inputs del formulario
-const titleInput = document.getElementById("book-title-input");
-const authorInput = document.getElementById("book-author-input");
-const genreSelect = document.getElementById("book-genre-select");
-const genreCustomInput = document.getElementById("book-genre-custom-input");
-const yearInput = document.getElementById("book-year-input");
-
-// Referencias del modal de edición
-const editBookModal = document.getElementById("edit-book-modal");
-const closeEditModalBtn = document.getElementById("close-edit-modal-btn");
-const cancelEditModalBtn = document.getElementById("cancel-edit-modal-btn");
-const editBookForm = document.getElementById("edit-book-form");
-const editBookId = document.getElementById("edit-book-id");
-const editTitleInput = document.getElementById("edit-book-title-input");
-const editAuthorInput = document.getElementById("edit-book-author-input");
-const editGenreSelect = document.getElementById("edit-book-genre-select");
-const editGenreCustomInput = document.getElementById("edit-book-genre-custom-input");
-const editYearInput = document.getElementById("edit-book-year-input");
-
-// Referencias del modal de vista detallada
-const detailsBookModal = document.getElementById("details-book-modal");
-const closeDetailsModalBtn = document.getElementById("close-details-modal-btn");
-const closeDetailsBottomBtn = document.getElementById("close-details-bottom-btn");
-const detailsTitle = document.getElementById("details-book-title");
-const detailsAuthor = document.getElementById("details-book-author");
-const detailsGenre = document.getElementById("details-book-genre");
-const detailsYear = document.getElementById("details-book-year");
-const detailsBadge = document.getElementById("details-book-badge");
-const detailsDescription = document.getElementById("details-book-description");
-
-// Referencias del botón y modal de restauración de catálogo
-const resetCatalogBtn = document.getElementById("reset-catalog-btn");
-const resetConfirmModal = document.getElementById("reset-confirm-modal");
-const resetConfirmCancelBtn = document.getElementById("reset-confirm-cancel-btn");
-const resetConfirmBtn = document.getElementById("reset-confirm-btn");
-
-// Referencia del botón de favoritos
-const favoritesToggleBtn = document.getElementById("favorites-toggle-btn");
-
-
-
-
-
 /**
  * Actualiza dinámicamente las opciones del selector de géneros
  */
 function updateGenreOptions() {
+    const genreFilter = document.getElementById("genre-filter");
+    if (!genreFilter) return;
+
+    const books = getBooks();
     const genres = ["all", ...new Set(books.map(b => b.genre))];
     const currentValue = genreFilter.value;
     
@@ -146,6 +96,7 @@ function updateGenreOptions() {
  * Actualiza dinámicamente las sugerencias de autocompletado para el autor
  */
 function updateAuthorSuggestions() {
+    const books = getBooks();
     const authors = [...new Set(books.map(b => b.author))];
     
     const populateDatalist = (datalistId) => {
@@ -168,6 +119,11 @@ function updateAuthorSuggestions() {
  * Actualiza dinámicamente las opciones de género en los formularios de añadir y editar
  */
 function updateFormGenreSelects() {
+    const genreSelect = document.getElementById("book-genre-select");
+    const editGenreSelect = document.getElementById("edit-book-genre-select");
+    if (!genreSelect || !editGenreSelect) return;
+
+    const books = getBooks();
     const genres = [...new Set(books.map(b => b.genre))];
     
     const populateSelect = (selectEl) => {
@@ -196,11 +152,84 @@ function updateFormGenreSelects() {
     populateSelect(editGenreSelect);
 }
 
+function handleAddBook(e) {
+    e.preventDefault();
+    
+    const titleInput = document.getElementById("book-title-input");
+    const authorInput = document.getElementById("book-author-input");
+    const genreSelect = document.getElementById("book-genre-select");
+    const genreCustomInput = document.getElementById("book-genre-custom-input");
+    const yearInput = document.getElementById("book-year-input");
 
+    if (!titleInput || !authorInput || !genreSelect || !genreCustomInput || !yearInput) return;
+
+    const title = titleInput.value.trim();
+    const author = authorInput.value.trim();
+    const year = parseInt(yearInput.value);
+    
+    let genre = genreSelect.value;
+    if (genre === "custom") {
+        genre = genreCustomInput.value.trim();
+    }
+    
+    // Validar género seleccionado
+    if (!genre) {
+        showToast("Por favor selecciona o escribe un género.", "error");
+        return;
+    }
+    
+    // Validar longitudes
+    if (title.length < 2 || author.length < 2 || genre.length < 2) {
+        showToast("El título, el autor y el género deben tener al menos 2 caracteres.", "error");
+        return;
+    }
+    
+    // Validar año no futuro
+    const currentYear = new Date().getFullYear();
+    if (year > currentYear) {
+        showToast(`El año de publicación no puede ser mayor al año actual (${currentYear}).`, "error");
+        return;
+    }
+    
+    // Validar duplicados
+    const books = getBooks();
+    const isDuplicate = books.some(b => b.title.toLowerCase() === title.toLowerCase() && b.author.toLowerCase() === author.toLowerCase());
+    if (isDuplicate) {
+        showToast("Este libro ya está registrado en la biblioteca.", "error");
+        return;
+    }
+    
+    const newBook = {
+        id: books.length ? Math.max(...books.map(b => b.id)) + 1 : 1,
+        title,
+        author,
+        genre,
+        year,
+        status: "available"
+    };
+
+    books.push(newBook);
+    setBooks(books);
+    saveToLocalStorage();
+    updateGenreOptions();
+    renderBooks(books);
+    updateStatistics();
+    showToast(`Libro "${title}" agregado con éxito.`, "success");
+    closeModal();
+}
 
 function handleEditBook(e) {
     e.preventDefault();
     
+    const editBookId = document.getElementById("edit-book-id");
+    const editTitleInput = document.getElementById("edit-book-title-input");
+    const editAuthorInput = document.getElementById("edit-book-author-input");
+    const editGenreSelect = document.getElementById("edit-book-genre-select");
+    const editGenreCustomInput = document.getElementById("edit-book-genre-custom-input");
+    const editYearInput = document.getElementById("edit-book-year-input");
+
+    if (!editBookId || !editTitleInput || !editAuthorInput || !editGenreSelect || !editGenreCustomInput || !editYearInput) return;
+
     const id = parseInt(editBookId.value);
     const title = editTitleInput.value.trim();
     const author = editAuthorInput.value.trim();
@@ -231,6 +260,7 @@ function handleEditBook(e) {
     }
     
     // Validar duplicados (excluyendo el libro actual)
+    const books = getBooks();
     const isDuplicate = books.some(b => b.id !== id && b.title.toLowerCase() === title.toLowerCase() && b.author.toLowerCase() === author.toLowerCase());
     if (isDuplicate) {
         showToast("Ya existe otro libro registrado con el mismo título y autor.", "error");
@@ -245,6 +275,7 @@ function handleEditBook(e) {
         books[bookIndex].genre = genre;
         books[bookIndex].year = year;
         
+        setBooks(books);
         saveToLocalStorage();
         updateGenreOptions();
         handleSearch();
@@ -254,9 +285,24 @@ function handleEditBook(e) {
     }
 }
 
-
-
-
+/**
+ * Alterna el estado de préstamo de un libro
+ * @param {number} bookId - ID del libro a alternar
+ */
+function toggleBookStatus(bookId) {
+    const books = getBooks();
+    const book = books.find(b => b.id === bookId);
+    if (book) {
+        book.status = book.status === "available" ? "borrowed" : "available";
+        setBooks(books);
+        saveToLocalStorage();
+        handleSearch(); // Recargar respetando filtros
+        updateStatistics();
+        
+        const actionText = book.status === "borrowed" ? "prestado" : "devuelto";
+        showToast(`Libro "${book.title}" ${actionText} con éxito.`, "info");
+    }
+}
 
 /**
  * Califica un libro y actualiza la vista y el almacenamiento local
@@ -264,9 +310,11 @@ function handleEditBook(e) {
  * @param {number} ratingValue - Calificación asignada
  */
 function rateBook(bookId, ratingValue) {
+    const books = getBooks();
     const book = books.find(b => b.id === bookId);
     if (book) {
         book.rating = ratingValue;
+        setBooks(books);
         saveToLocalStorage();
         handleSearch(); // Recargar respetando filtros actuales
         showToast(`Calificaste "${book.title}" con ${ratingValue} estrellas.`, "success");
@@ -278,9 +326,11 @@ function rateBook(bookId, ratingValue) {
  * @param {number} bookId - ID del libro
  */
 function toggleFavorite(bookId) {
+    const books = getBooks();
     const book = books.find(b => b.id === bookId);
     if (book) {
         book.favorite = !book.favorite;
+        setBooks(books);
         saveToLocalStorage();
         handleSearch();
         showToast(
@@ -290,99 +340,15 @@ function toggleFavorite(bookId) {
     }
 }
 
-
-
-
-
-
-
-function handleAddBook(e) {
-    e.preventDefault();
-    
-    const title = titleInput.value.trim();
-    const author = authorInput.value.trim();
-    const year = parseInt(yearInput.value);
-    
-    let genre = genreSelect.value;
-    if (genre === "custom") {
-        genre = genreCustomInput.value.trim();
-    }
-    
-    // Validar género seleccionado
-    if (!genre) {
-        showToast("Por favor selecciona o escribe un género.", "error");
-        return;
-    }
-    
-    // Validar longitudes
-    if (title.length < 2 || author.length < 2 || genre.length < 2) {
-        showToast("El título, el autor y el género deben tener al menos 2 caracteres.", "error");
-        return;
-    }
-    
-    // Validar año no futuro
-    const currentYear = new Date().getFullYear();
-    if (year > currentYear) {
-        showToast(`El año de publicación no puede ser mayor al año actual (${currentYear}).`, "error");
-        return;
-    }
-    
-    // Validar duplicados
-    const isDuplicate = books.some(b => b.title.toLowerCase() === title.toLowerCase() && b.author.toLowerCase() === author.toLowerCase());
-    if (isDuplicate) {
-        showToast("Este libro ya está registrado en la biblioteca.", "error");
-        return;
-    }
-    
-    const newBook = {
-        id: books.length ? Math.max(...books.map(b => b.id)) + 1 : 1,
-        title,
-        author,
-        genre,
-        year,
-        status: "available"
-    };
-
-    books.push(newBook);
-    saveToLocalStorage();
-    updateGenreOptions();
-    renderBooks(books);
-    updateStatistics();
-    showToast(`Libro "${title}" agregado con éxito.`, "success");
-    closeModal();
-}
-
-// Referencias del modal de confirmación
-const confirmModal = document.getElementById("confirm-modal");
-const confirmCancelBtn = document.getElementById("confirm-cancel-btn");
-const confirmDeleteBtn = document.getElementById("confirm-delete-btn");
-let bookIdToDelete = null;
-
-/**
- * Alterna el estado de préstamo de un libro
- * @param {number} bookId - ID del libro a alternar
- */
-function toggleBookStatus(bookId) {
-    const book = books.find(b => b.id === bookId);
-    if (book) {
-        book.status = book.status === "available" ? "borrowed" : "available";
-        saveToLocalStorage();
-        handleSearch(); // Recargar respetando filtros
-        updateStatistics();
-        
-        const actionText = book.status === "borrowed" ? "prestado" : "devuelto";
-        showToast(`Libro "${book.title}" ${actionText} con éxito.`, "info");
-    }
-}
-
-
-
 function executeDeleteBook() {
+    const bookIdToDelete = getBookIdToDelete();
     if (bookIdToDelete !== null) {
+        let books = getBooks();
         const book = books.find(b => b.id === bookIdToDelete);
         const title = book ? book.title : "";
         
         books = books.filter(b => b.id !== bookIdToDelete);
+        setBooks(books);
         saveToLocalStorage();
         updateGenreOptions();
         handleSearch();
@@ -395,17 +361,20 @@ function executeDeleteBook() {
     }
 }
 
-// Funciones para restaurar el catálogo inicial
-
 function executeResetCatalog() {
-    books = [...initialBooks];
+    setBooks([...initialBooks]);
     saveToLocalStorage();
     
     // Limpiar buscador y filtros
-    searchInput.value = "";
-    genreFilter.value = "all";
-    statusFilter.value = "all";
-    sortSelect.value = "title-asc";
+    const searchInput = document.getElementById("search-input");
+    const genreFilter = document.getElementById("genre-filter");
+    const statusFilter = document.getElementById("status-filter");
+    const sortSelect = document.getElementById("sort-select");
+
+    if (searchInput) searchInput.value = "";
+    if (genreFilter) genreFilter.value = "all";
+    if (statusFilter) statusFilter.value = "all";
+    if (sortSelect) sortSelect.value = "title-asc";
     
     updateGenreOptions();
     handleSearch();
@@ -414,16 +383,12 @@ function executeResetCatalog() {
     showToast("Catálogo inicial restaurado con éxito.", "info");
 }
 
-
-
-
-
 // Inicialización de la aplicación e inicio de Eventos
 document.addEventListener("DOMContentLoaded", () => {
     initTheme();
     initView();
     updateGenreOptions();
-    renderBooks(books);
+    renderBooks(getBooks());
     updateStatistics();
     
     // Iniciar el enrutador de eventos modular
