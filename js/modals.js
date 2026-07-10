@@ -65,10 +65,6 @@ export function getBookIdToDelete() {
     return bookIdToDelete;
 }
 
-export function setBookIdToDelete(val) {
-    bookIdToDelete = val;
-}
-
 // Funciones para el Modal de Adición
 export function openModal() {
     if (addBookModal) addBookModal.classList.add("active");
