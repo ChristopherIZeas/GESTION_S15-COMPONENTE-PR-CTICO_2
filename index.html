@@ -152,6 +152,45 @@
         </div>
     </div>
 
+    <!-- Modal para Vista Detallada de Libro -->
+    <div class="modal-overlay" id="details-book-modal">
+        <div class="modal-content" style="max-width: 550px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Ficha del Libro</h3>
+                <button class="modal-close-btn" id="close-details-modal-btn">&times;</button>
+            </div>
+            <div class="book-details-body" style="display: flex; gap: 1.5rem; margin-top: 1rem; align-items: flex-start; flex-wrap: wrap;">
+                <div class="book-details-cover" style="flex: 1; min-width: 140px; background: linear-gradient(135deg, var(--accent-color), #8b5cf6); border-radius: 12px; height: 200px; display: flex; align-items: center; justify-content: center; font-size: 4rem; box-shadow: var(--shadow-md);">
+                    📖
+                </div>
+                <div class="book-details-info" style="flex: 2; min-width: 250px;">
+                    <span class="book-badge" id="details-book-badge" style="margin-bottom: 0.75rem; display: inline-block;">Disponible</span>
+                    <h2 id="details-book-title" style="font-family: var(--font-heading); font-size: 1.6rem; font-weight: 800; line-height: 1.2; margin-bottom: 0.5rem; color: var(--text-primary);">Título del Libro</h2>
+                    <p id="details-book-author" style="font-size: 1rem; color: var(--text-secondary); margin-bottom: 1.25rem;">por Autor</p>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem; border-top: 1px solid var(--border-color); padding-top: 1rem;">
+                        <div>
+                            <span style="font-size: 0.75rem; color: var(--text-muted); display: block; text-transform: uppercase;">Género</span>
+                            <strong id="details-book-genre" style="font-size: 0.95rem; color: var(--text-primary);">Género</strong>
+                        </div>
+                        <div>
+                            <span style="font-size: 0.75rem; color: var(--text-muted); display: block; text-transform: uppercase;">Año</span>
+                            <strong id="details-book-year" style="font-size: 0.95rem; color: var(--text-primary);">Año</strong>
+                        </div>
+                    </div>
+                    
+                    <div style="border-top: 1px solid var(--border-color); padding-top: 1rem;">
+                        <span style="font-size: 0.75rem; color: var(--text-muted); display: block; text-transform: uppercase; margin-bottom: 0.25rem;">Resumen / Nota</span>
+                        <p id="details-book-description" style="font-size: 0.875rem; color: var(--text-secondary); line-height: 1.5;"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="form-actions" style="margin-top: 1.5rem; border-top: 1px solid var(--border-color); padding-top: 1rem;">
+                <button type="button" class="btn-primary" id="close-details-bottom-btn" style="flex: none; min-width: 100px;">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Contenedor de Notificaciones Toast -->
     <div id="toast-container" class="toast-container"></div>
 

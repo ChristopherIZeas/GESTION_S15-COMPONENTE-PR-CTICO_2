@@ -81,6 +81,17 @@ const editAuthorInput = document.getElementById("edit-book-author-input");
 const editGenreInput = document.getElementById("edit-book-genre-input");
 const editYearInput = document.getElementById("edit-book-year-input");
 
+// Referencias del modal de vista detallada
+const detailsBookModal = document.getElementById("details-book-modal");
+const closeDetailsModalBtn = document.getElementById("close-details-modal-btn");
+const closeDetailsBottomBtn = document.getElementById("close-details-bottom-btn");
+const detailsTitle = document.getElementById("details-book-title");
+const detailsAuthor = document.getElementById("details-book-author");
+const detailsGenre = document.getElementById("details-book-genre");
+const detailsYear = document.getElementById("details-book-year");
+const detailsBadge = document.getElementById("details-book-badge");
+const detailsDescription = document.getElementById("details-book-description");
+
 /**
  * Renderiza la lista de libros en la cuadrícula del DOM
  * @param {Array} booksToRender - Lista de libros a renderizar
@@ -245,6 +256,29 @@ function handleEditBook(e) {
         showToast(`Libro "${title}" actualizado con éxito.`, "success");
         closeEditModal();
     }
+}
+
+// Funciones para el Modal de Detalle
+function openDetailsModal(bookId) {
+    const book = books.find(b => b.id === bookId);
+    if (book) {
+        detailsTitle.textContent = book.title;
+        detailsAuthor.textContent = `por ${book.author}`;
+        detailsGenre.textContent = book.genre;
+        detailsYear.textContent = book.year;
+        
+        const isAvailable = book.status === "available";
+        detailsBadge.className = `book-badge ${isAvailable ? 'badge-available' : 'badge-borrowed'}`;
+        detailsBadge.textContent = isAvailable ? "Disponible" : "Prestado";
+        
+        detailsDescription.textContent = `Esta es una obra destacada del género "${book.genre}", escrita originalmente por el reconocido autor ${book.author} y publicada en el año ${book.year}. Un título indispensable para ampliar la colección.`;
+        
+        detailsBookModal.classList.add("active");
+    }
+}
+
+function closeDetailsModal() {
+    detailsBookModal.classList.remove("active");
 }
 
 /**
@@ -472,6 +506,9 @@ closeEditModalBtn.addEventListener("click", closeEditModal);
 cancelEditModalBtn.addEventListener("click", closeEditModal);
 editBookForm.addEventListener("submit", handleEditBook);
 
+closeDetailsModalBtn.addEventListener("click", closeDetailsModal);
+closeDetailsBottomBtn.addEventListener("click", closeDetailsModal);
+
 confirmCancelBtn.addEventListener("click", closeConfirmModal);
 confirmDeleteBtn.addEventListener("click", executeDeleteBook);
 themeToggle.addEventListener("click", toggleTheme);
@@ -486,6 +523,8 @@ booksGrid.addEventListener("click", (e) => {
     
     if (e.target.classList.contains("toggle-status-btn")) {
         toggleBookStatus(bookId);
+    } else if (e.target.classList.contains("book-title")) {
+        openDetailsModal(bookId);
     } else if (e.target.closest(".edit-book-btn")) {
         openEditModal(bookId);
     } else if (e.target.closest(".delete-book-btn")) {
@@ -504,6 +543,13 @@ addBookModal.addEventListener("click", (e) => {
 editBookModal.addEventListener("click", (e) => {
     if (e.target === editBookModal) {
         closeEditModal();
+    }
+});
+
+// Cerrar modal de detalles al hacer click fuera
+detailsBookModal.addEventListener("click", (e) => {
+    if (e.target === detailsBookModal) {
+        closeDetailsModal();
     }
 });
 

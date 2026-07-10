@@ -74,3 +74,10 @@ Cambio solicitado. Modificación y edición de detalles de libros.
 Motivo del cambio. Habilitar la edición de detalles de libros registrados en la biblioteca (título, autor, género y año) mediante una ventana modal dedicada y validada.
 Responsable. aalvarador8
 Fecha de aprobación. 2026-07-09
+
+---
+
+Cambio solicitado. Vista detallada de la información de los libros.
+Motivo del cambio. Habilitar la visualización de la ficha técnica completa y una nota informativa/resumen de cada libro en una ventana modal dedicada al hacer clic sobre su título.
+Responsable. aalvarador8
+Fecha de aprobación. 2026-07-09
