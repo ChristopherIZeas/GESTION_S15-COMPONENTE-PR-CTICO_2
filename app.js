@@ -228,6 +228,33 @@ function executeDeleteBook() {
     }
 }
 
+// Referencia al botón de tema
+const themeToggle = document.getElementById("theme-toggle");
+
+// Funciones para el control de temas
+function initTheme() {
+    const savedTheme = localStorage.getItem("biblio_theme") || "dark";
+    applyTheme(savedTheme);
+}
+
+function applyTheme(theme) {
+    if (theme === "light") {
+        document.body.classList.add("light-theme");
+        document.body.classList.remove("dark-theme");
+        themeToggle.textContent = "🌙";
+    } else {
+        document.body.classList.add("dark-theme");
+        document.body.classList.remove("light-theme");
+        themeToggle.textContent = "☀️";
+    }
+    localStorage.setItem("biblio_theme", theme);
+}
+
+function toggleTheme() {
+    const isLight = document.body.classList.contains("light-theme");
+    applyTheme(isLight ? "dark" : "light");
+}
+
 // Event Listeners
 searchInput.addEventListener("input", handleSearch);
 genreFilter.addEventListener("change", handleSearch);
@@ -238,6 +265,7 @@ addBookForm.addEventListener("submit", handleAddBook);
 
 confirmCancelBtn.addEventListener("click", closeConfirmModal);
 confirmDeleteBtn.addEventListener("click", executeDeleteBook);
+themeToggle.addEventListener("click", toggleTheme);
 
 // Eventos en la cuadrícula de libros (Delegación de eventos)
 booksGrid.addEventListener("click", (e) => {
@@ -269,6 +297,7 @@ confirmModal.addEventListener("click", (e) => {
 
 // Inicialización de la aplicación
 document.addEventListener("DOMContentLoaded", () => {
+    initTheme();
     updateGenreOptions();
     renderBooks(books);
 });

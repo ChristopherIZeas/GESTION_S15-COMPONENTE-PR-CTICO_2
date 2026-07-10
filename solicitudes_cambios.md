@@ -39,3 +39,10 @@ Cambio solicitado. Modal de confirmación estilizado para la eliminación de lib
 Motivo del cambio. Evitar eliminaciones accidentales de libros mediante la presentación de un cuadro de diálogo modal personalizado y estilizado en lugar del confirm de alerta nativo del navegador.
 Responsable. Antigravity AI
 Fecha de aprobación. 2026-07-09
+
+---
+
+Cambio solicitado. Alternador de tema Claro y Oscuro con persistencia.
+Motivo del cambio. Mejorar la comodidad del usuario agregando la opción de alternar entre un tema visual claro y oscuro de manera dinámica, guardando su preferencia en localStorage.
+Responsable. Antigravity AI
+Fecha de aprobación. 2026-07-09
