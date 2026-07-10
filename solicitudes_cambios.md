@@ -18,3 +18,10 @@ Cambio solicitado. Funcionalidad interactiva de préstamo y devolución de libro
 Motivo del cambio. Permitir alternar el estado del libro ("Disponible" o "Prestado") mediante un botón dinámico con actualización visual de los badges correspondientes.
 Responsable. Antigravity AI
 Fecha de aprobación. 2026-07-09
+
+---
+
+Cambio solicitado. Filtro de libros por género en la cabecera.
+Motivo del cambio. Facilitar la búsqueda y organización de libros permitiendo al usuario filtrar el catálogo según el género literario seleccionado en un menú desplegable dinámico.
+Responsable. Antigravity AI
+Fecha de aprobación. 2026-07-09

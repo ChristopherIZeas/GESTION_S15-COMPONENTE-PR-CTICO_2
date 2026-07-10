@@ -53,6 +53,7 @@ const addBookModal = document.getElementById("add-book-modal");
 const closeModalBtn = document.getElementById("close-modal-btn");
 const cancelModalBtn = document.getElementById("cancel-modal-btn");
 const addBookForm = document.getElementById("add-book-form");
+const genreFilter = document.getElementById("genre-filter");
 
 // Inputs del formulario
 const titleInput = document.getElementById("book-title-input");
@@ -108,20 +109,45 @@ function renderBooks(booksToRender) {
 }
 
 /**
- * Filtra los libros en tiempo real basados en la búsqueda del usuario
+ * Filtra los libros en tiempo real basados en la búsqueda del usuario y el género seleccionado
  */
 function handleSearch() {
     const query = searchInput.value.toLowerCase().trim();
+    const selectedGenre = genreFilter.value;
     
     const filtered = books.filter(book => {
-        return (
+        const matchesQuery = (
             book.title.toLowerCase().includes(query) ||
             book.author.toLowerCase().includes(query) ||
             book.genre.toLowerCase().includes(query)
         );
+        const matchesGenre = selectedGenre === "all" || book.genre === selectedGenre;
+        return matchesQuery && matchesGenre;
     });
     
     renderBooks(filtered);
+}
+
+/**
+ * Actualiza dinámicamente las opciones del selector de géneros
+ */
+function updateGenreOptions() {
+    const genres = ["all", ...new Set(books.map(b => b.genre))];
+    const currentValue = genreFilter.value;
+    
+    genreFilter.innerHTML = "";
+    genres.forEach(genre => {
+        const option = document.createElement("option");
+        option.value = genre;
+        option.textContent = genre === "all" ? "Todos los géneros" : genre;
+        genreFilter.appendChild(option);
+    });
+    
+    if (genres.includes(currentValue)) {
+        genreFilter.value = currentValue;
+    } else {
+        genreFilter.value = "all";
+    }
 }
 
 // Funciones para el Modal
@@ -129,6 +155,7 @@ function openModal() {
     addBookModal.classList.add("active");
 }
 
+// Cerrar modal
 function closeModal() {
     addBookModal.classList.remove("active");
     addBookForm.reset();
@@ -147,6 +174,7 @@ function handleAddBook(e) {
     };
 
     books.push(newBook);
+    updateGenreOptions();
     renderBooks(books);
     closeModal();
 }
@@ -165,6 +193,7 @@ function toggleBookStatus(bookId) {
 
 // Event Listeners
 searchInput.addEventListener("input", handleSearch);
+genreFilter.addEventListener("change", handleSearch);
 addBookBtn.addEventListener("click", openModal);
 closeModalBtn.addEventListener("click", closeModal);
 cancelModalBtn.addEventListener("click", closeModal);
@@ -190,5 +219,6 @@ addBookModal.addEventListener("click", (e) => {
 
 // Inicialización de la aplicación
 document.addEventListener("DOMContentLoaded", () => {
+    updateGenreOptions();
     renderBooks(books);
 });
