@@ -4,233 +4,290 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BiblioTech - Biblioteca Virtual</title>
-    <!-- Google Fonts: Outfit & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="dark-theme">
-    <header class="app-header">
-        <div class="header-container">
-            <div class="logo-area">
-                <span class="logo-icon">📚</span>
-                <h1 class="logo-text">BiblioTech</h1>
-                <button id="theme-toggle" class="theme-toggle-btn" aria-label="Alternar modo de color">☀️</button>
-            </div>
-            
-            <div class="search-bar-container">
-                <input type="text" id="search-input" placeholder="Buscar por título, autor o género..." aria-label="Buscar libros">
-                <span class="search-icon">🔍</span>
-            </div>
-        </div>
-    </header>
+    <div class="page-shell">
+        <header class="app-header">
+            <div class="header-container">
+                <div class="brand-block">
+                    <div class="brand-mark"><i class="fa-solid fa-book-open-reader"></i></div>
+                    <h1 class="logo-text"><span>Biblio</span><span>Tech</span></h1>
+                </div>
 
-    <main class="main-content">
-        <!-- Panel de Estadísticas -->
-        <div class="stats-dashboard">
-            <div class="stat-card">
-                <span class="stat-icon">📚</span>
-                <div class="stat-info">
-                    <span class="stat-value" id="stats-total">0</span>
-                    <span class="stat-label">Libros Totales</span>
+                <div class="search-bar-container">
+                    <span class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+                    <input type="text" id="search-input" placeholder="Buscar libros, autores o géneros..." aria-label="Buscar libros">
+                </div>
+
+                <div class="header-tools">
+                    <button id="theme-toggle" class="theme-switch" aria-label="Alternar modo de color">
+                        <span class="theme-option theme-option-dark"><i class="fa-solid fa-moon"></i><span>Oscuro</span></span>
+                        <span class="theme-option theme-option-light"><i class="fa-regular fa-sun"></i><span>Claro</span></span>
+                    </button>
+                    <button id="add-book-btn" class="btn-primary add-book-btn"><i class="fa-solid fa-circle-plus"></i><span>Agregar</span></button>
                 </div>
             </div>
-            <div class="stat-card">
-                <span class="stat-icon">✅</span>
-                <div class="stat-info">
-                    <span class="stat-value" id="stats-available">0</span>
-                    <span class="stat-label">Disponibles</span>
-                </div>
-            </div>
-            <div class="stat-card">
-                <span class="stat-icon">📖</span>
-                <div class="stat-info">
-                    <span class="stat-value" id="stats-borrowed">0</span>
-                    <span class="stat-label">Prestados</span>
-                </div>
-            </div>
-            <div class="stat-card">
-                <span class="stat-icon">📈</span>
-                <div class="stat-info">
-                    <span class="stat-value" id="stats-percentage">0%</span>
-                    <span class="stat-label">Disponibilidad</span>
-                </div>
-            </div>
-        </div>
+        </header>
 
-        <section class="section-header">
-            <h2 class="section-title">Catálogo de Libros</h2>
-            <div class="header-actions">
-                <select id="genre-filter" class="select-filter" aria-label="Filtrar por género">
-                    <option value="all">Todos los géneros</option>
-                </select>
-                <select id="status-filter" class="select-filter" aria-label="Filtrar por disponibilidad">
-                    <option value="all">Todos los estados</option>
-                    <option value="available">Disponibles</option>
-                    <option value="borrowed">Prestados</option>
-                </select>
-                <select id="sort-select" class="select-filter" aria-label="Ordenar libros por">
-                    <option value="title-asc">Título (A-Z)</option>
-                    <option value="title-desc">Título (Z-A)</option>
-                    <option value="year-desc">Año (Nuevo - Antiguo)</option>
-                    <option value="year-asc">Año (Antiguo - Nuevo)</option>
-                    <option value="rating-desc">Calificación (Mejor valorados)</option>
-                </select>
-                <button id="favorites-toggle-btn" class="btn-secondary" aria-label="Mostrar solo favoritos">❤️ Favoritos</button>
-                <button id="view-toggle" class="btn-secondary" aria-label="Alternar vista cuadrícula o lista">📋 Lista</button>
-                <button id="reset-catalog-btn" class="btn-danger-outline" aria-label="Restaurar catálogo inicial">🔄 Restaurar</button>
-                <button id="add-book-btn" class="btn-primary">➕ Agregar Libro</button>
-            </div>
-        </section>
+        <main class="main-content">
+            <section class="stats-dashboard">
+                <article class="stat-card">
+                    <div class="stat-icon-wrap"><i class="fa-solid fa-book-open"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-label">Total de libros</span>
+                        <span class="stat-value" id="stats-total">0</span>
+                        <span class="stat-sub" id="stats-total-sub">Catálogo completo</span>
+                    </div>
+                </article>
+                <article class="stat-card">
+                    <div class="stat-icon-wrap"><i class="fa-solid fa-circle-check"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-label">Disponibles</span>
+                        <span class="stat-value" id="stats-available">0</span>
+                        <span class="stat-sub" id="stats-available-sub">Listos para préstamo</span>
+                    </div>
+                </article>
+                <article class="stat-card">
+                    <div class="stat-icon-wrap"><i class="fa-solid fa-book-bookmark"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-label">Prestados</span>
+                        <span class="stat-value" id="stats-borrowed">0</span>
+                        <span class="stat-sub" id="stats-borrowed-sub">Fuera de biblioteca</span>
+                    </div>
+                </article>
+                <article class="stat-card">
+                    <div class="stat-icon-wrap"><i class="fa-solid fa-chart-column"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-label">Disponibilidad</span>
+                        <span class="stat-value" id="stats-percentage">0%</span>
+                        <span class="stat-sub" id="stats-percentage-sub">Estado general</span>
+                    </div>
+                </article>
+            </section>
 
-        <div class="books-container grid-view" id="books-grid">
-            <!-- Las tarjetas de libros se generarán dinámicamente aquí -->
-        </div>
-    </main>
+            <section class="catalog-panel">
+                <div class="controls-strip">
+                    <div class="pill-group" id="genre-pills"></div>
 
-    <!-- Modal para Agregar Libro -->
+                    <div class="divider"></div>
+
+                    <div class="pill-group status-group">
+                        <button type="button" class="filter-pill active" data-status="all">Todos</button>
+                        <button type="button" class="filter-pill" data-status="available">Disponibles</button>
+                        <button type="button" class="filter-pill" data-status="borrowed">Prestados</button>
+                    </div>
+
+                    <div class="controls-spacer"></div>
+
+                    <div class="header-actions">
+                        <button id="favorites-toggle-btn" class="utility-chip" aria-label="Mostrar solo favoritos"><i class="fa-regular fa-heart"></i><span>Favoritos</span></button>
+                        <button id="sort-cycle-btn" class="utility-chip" aria-label="Cambiar orden"><i class="fa-solid fa-arrow-up-a-z"></i><span>Título</span></button>
+                        <button id="reset-catalog-btn" class="utility-chip icon-chip" aria-label="Restaurar catálogo inicial"><i class="fa-solid fa-rotate-left"></i></button>
+                        <button id="view-toggle" class="utility-chip icon-chip" aria-label="Alternar vista cuadrícula o lista"><i class="fa-solid fa-grip"></i></button>
+                    </div>
+                    <select id="genre-filter" class="select-filter hidden-control" aria-label="Filtrar por género">
+                            <option value="all">Todos los géneros</option>
+                        </select>
+                        <select id="status-filter" class="select-filter hidden-control" aria-label="Filtrar por disponibilidad">
+                            <option value="all">Todos los estados</option>
+                            <option value="available">Disponibles</option>
+                            <option value="borrowed">Prestados</option>
+                        </select>
+                        <select id="sort-select" class="select-filter hidden-control" aria-label="Ordenar libros por">
+                            <option value="title-asc">Título A-Z</option>
+                            <option value="title-desc">Título Z-A</option>
+                            <option value="year-desc">Año reciente</option>
+                            <option value="year-asc">Año antiguo</option>
+                            <option value="rating-desc">Mejor valorados</option>
+                        </select>
+                </div>
+
+                <div class="books-container grid-view" id="books-grid"></div>
+                <p class="result-summary" id="result-summary"></p>
+            </section>
+        </main>
+    </div>
+
     <div class="modal-overlay" id="add-book-modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title">Agregar Nuevo Libro</h3>
-                <button class="modal-close-btn" id="close-modal-btn">&times;</button>
+                <h3 class="modal-title">Nuevo libro</h3>
+                <button class="modal-close-btn" id="close-modal-btn" aria-label="Cerrar"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <form id="add-book-form" class="modal-form">
                 <div class="form-group">
                     <label for="book-title-input">Título</label>
-                    <input type="text" id="book-title-input" required placeholder="Ej. El Alquimista">
+                    <input type="text" id="book-title-input" required placeholder="Título del libro">
                 </div>
                 <div class="form-group">
                     <label for="book-author-input">Autor</label>
-                    <input type="text" id="book-author-input" required placeholder="Ej. Paulo Coelho" list="authors-list">
+                    <input type="text" id="book-author-input" required placeholder="Nombre del autor" list="authors-list">
                     <datalist id="authors-list"></datalist>
                 </div>
-                <div class="form-group">
-                    <label for="book-genre-select">Género</label>
-                    <select id="book-genre-select" required>
-                        <option value="" disabled selected>Selecciona un género...</option>
-                    </select>
-                    <input type="text" id="book-genre-custom-input" placeholder="Escribe el nuevo género..." style="display: none; margin-top: 0.5rem;">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="book-genre-select">Género</label>
+                        <select id="book-genre-select" required>
+                            <option value="" disabled selected>Selecciona un género...</option>
+                        </select>
+                        <input type="text" id="book-genre-custom-input" placeholder="Nuevo género..." style="display: none; margin-top: 0.5rem;">
+                    </div>
+                    <div class="form-group">
+                        <label for="book-year-input">Año</label>
+                        <input type="number" id="book-year-input" required placeholder="2024">
+                    </div>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Calificación</label>
+                        <div class="rating-input" id="book-rating-input" data-rating="3">
+                            <button type="button" class="rating-star filled" data-value="1" aria-label="1 estrella"><i class="fa-solid fa-star"></i></button>
+                            <button type="button" class="rating-star filled" data-value="2" aria-label="2 estrellas"><i class="fa-solid fa-star"></i></button>
+                            <button type="button" class="rating-star filled" data-value="3" aria-label="3 estrellas"><i class="fa-solid fa-star"></i></button>
+                            <button type="button" class="rating-star" data-value="4" aria-label="4 estrellas"><i class="fa-solid fa-star"></i></button>
+                            <button type="button" class="rating-star" data-value="5" aria-label="5 estrellas"><i class="fa-solid fa-star"></i></button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="book-status-select">Estado</label>
+                        <select id="book-status-select" required>
+                            <option value="available">Disponible</option>
+                            <option value="borrowed">Prestado</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label for="book-year-input">Año de Publicación</label>
-                    <input type="number" id="book-year-input" required placeholder="Ej. 1988">
+                    <label for="book-description-input">Descripción</label>
+                    <textarea id="book-description-input" rows="4" placeholder="Breve sinopsis del libro..."></textarea>
                 </div>
                 <div class="form-actions">
                     <button type="button" class="btn-secondary" id="cancel-modal-btn">Cancelar</button>
-                    <button type="submit" class="btn-primary">Guardar Libro</button>
+                    <button type="submit" class="btn-primary">Guardar libro</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Modal de Confirmación para Eliminar -->
     <div class="modal-overlay" id="confirm-modal">
-        <div class="modal-content" style="max-width: 400px; text-align: center;">
-            <h3 class="modal-title" style="margin-bottom: 1rem;">¿Eliminar Libro?</h3>
-            <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">¿Estás seguro de que deseas eliminar este libro? Esta acción no se puede deshacer.</p>
-            <div class="form-actions" style="justify-content: center;">
+        <div class="modal-content modal-content-small">
+            <h3 class="modal-title centered-title">Eliminar libro</h3>
+            <p class="modal-copy">¿Estás seguro de que deseas eliminar este libro? Esta acción no se puede deshacer.</p>
+            <div class="form-actions form-actions-centered">
                 <button type="button" class="btn-secondary" id="confirm-cancel-btn">Cancelar</button>
                 <button type="button" class="btn-danger" id="confirm-delete-btn">Eliminar</button>
             </div>
         </div>
     </div>
 
-    <!-- Modal para Editar Libro -->
     <div class="modal-overlay" id="edit-book-modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title">Editar Detalles del Libro</h3>
-                <button class="modal-close-btn" id="close-edit-modal-btn">&times;</button>
+                <h3 class="modal-title">Editar libro</h3>
+                <button class="modal-close-btn" id="close-edit-modal-btn" aria-label="Cerrar"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <form id="edit-book-form" class="modal-form">
                 <input type="hidden" id="edit-book-id">
                 <div class="form-group">
                     <label for="edit-book-title-input">Título</label>
-                    <input type="text" id="edit-book-title-input" required placeholder="Ej. El Alquimista">
+                    <input type="text" id="edit-book-title-input" required placeholder="Título del libro">
                 </div>
                 <div class="form-group">
                     <label for="edit-book-author-input">Autor</label>
-                    <input type="text" id="edit-book-author-input" required placeholder="Ej. Paulo Coelho" list="edit-authors-list">
+                    <input type="text" id="edit-book-author-input" required placeholder="Nombre del autor" list="edit-authors-list">
                     <datalist id="edit-authors-list"></datalist>
                 </div>
-                <div class="form-group">
-                    <label for="edit-book-genre-select">Género</label>
-                    <select id="edit-book-genre-select" required>
-                        <option value="" disabled selected>Selecciona un género...</option>
-                    </select>
-                    <input type="text" id="edit-book-genre-custom-input" placeholder="Escribe el nuevo género..." style="display: none; margin-top: 0.5rem;">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="edit-book-genre-select">Género</label>
+                        <select id="edit-book-genre-select" required>
+                            <option value="" disabled selected>Selecciona un género...</option>
+                        </select>
+                        <input type="text" id="edit-book-genre-custom-input" placeholder="Nuevo género..." style="display: none; margin-top: 0.5rem;">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-book-year-input">Año</label>
+                        <input type="number" id="edit-book-year-input" required placeholder="2024">
+                    </div>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Calificación</label>
+                        <div class="rating-input" id="edit-book-rating-input" data-rating="3">
+                            <button type="button" class="rating-star filled" data-value="1" aria-label="1 estrella"><i class="fa-solid fa-star"></i></button>
+                            <button type="button" class="rating-star filled" data-value="2" aria-label="2 estrellas"><i class="fa-solid fa-star"></i></button>
+                            <button type="button" class="rating-star filled" data-value="3" aria-label="3 estrellas"><i class="fa-solid fa-star"></i></button>
+                            <button type="button" class="rating-star" data-value="4" aria-label="4 estrellas"><i class="fa-solid fa-star"></i></button>
+                            <button type="button" class="rating-star" data-value="5" aria-label="5 estrellas"><i class="fa-solid fa-star"></i></button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-book-status-select">Estado</label>
+                        <select id="edit-book-status-select" required>
+                            <option value="available">Disponible</option>
+                            <option value="borrowed">Prestado</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label for="edit-book-year-input">Año de Publicación</label>
-                    <input type="number" id="edit-book-year-input" required placeholder="Ej. 1988">
+                    <label for="edit-book-description-input">Descripción</label>
+                    <textarea id="edit-book-description-input" rows="4" placeholder="Breve sinopsis del libro..."></textarea>
                 </div>
                 <div class="form-actions">
                     <button type="button" class="btn-secondary" id="cancel-edit-modal-btn">Cancelar</button>
-                    <button type="submit" class="btn-primary">Guardar Cambios</button>
+                    <button type="submit" class="btn-primary">Guardar cambios</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Modal para Vista Detallada de Libro -->
     <div class="modal-overlay" id="details-book-modal">
-        <div class="modal-content" style="max-width: 550px;">
+        <div class="modal-content modal-content-large">
             <div class="modal-header">
-                <h3 class="modal-title">Ficha del Libro</h3>
-                <button class="modal-close-btn" id="close-details-modal-btn">&times;</button>
+                <h3 class="modal-title">Detalle del libro</h3>
+                <button class="modal-close-btn" id="close-details-modal-btn" aria-label="Cerrar"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <div class="book-details-body" style="display: flex; gap: 1.5rem; margin-top: 1rem; align-items: flex-start; flex-wrap: wrap;">
-                <div class="book-details-cover" style="flex: 1; min-width: 140px; background: linear-gradient(135deg, var(--accent-color), #8b5cf6); border-radius: 12px; height: 200px; display: flex; align-items: center; justify-content: center; font-size: 4rem; box-shadow: var(--shadow-md);">
-                    📖
-                </div>
-                <div class="book-details-info" style="flex: 2; min-width: 250px;">
-                    <span class="book-badge" id="details-book-badge" style="margin-bottom: 0.75rem; display: inline-block;">Disponible</span>
-                    <h2 id="details-book-title" style="font-family: var(--font-heading); font-size: 1.6rem; font-weight: 800; line-height: 1.2; margin-bottom: 0.5rem; color: var(--text-primary);">Título del Libro</h2>
-                    <p id="details-book-author" style="font-size: 1rem; color: var(--text-secondary); margin-bottom: 1.25rem;">por Autor</p>
-                    
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem; border-top: 1px solid var(--border-color); padding-top: 1rem;">
-                        <div>
-                            <span style="font-size: 0.75rem; color: var(--text-muted); display: block; text-transform: uppercase;">Género</span>
-                            <strong id="details-book-genre" style="font-size: 0.95rem; color: var(--text-primary);">Género</strong>
-                        </div>
-                        <div>
-                            <span style="font-size: 0.75rem; color: var(--text-muted); display: block; text-transform: uppercase;">Año</span>
-                            <strong id="details-book-year" style="font-size: 0.95rem; color: var(--text-primary);">Año</strong>
-                        </div>
-                    </div>
-                    
-                    <div style="border-top: 1px solid var(--border-color); padding-top: 1rem;">
-                        <span style="font-size: 0.75rem; color: var(--text-muted); display: block; text-transform: uppercase; margin-bottom: 0.25rem;">Resumen / Nota</span>
-                        <p id="details-book-description" style="font-size: 0.875rem; color: var(--text-secondary); line-height: 1.5;"></p>
+            <div class="details-cover">
+                <div class="details-cover-pattern"></div>
+                <span class="details-cover-genre" id="details-book-genre">Género</span>
+                <span class="book-badge" id="details-book-badge">Disponible</span>
+            </div>
+            <div class="details-body">
+                <h2 id="details-book-title">Título del libro</h2>
+                <p id="details-book-author">por Autor</p>
+                <div class="details-rating" id="details-book-rating"></div>
+                <div class="details-meta">
+                    <div>
+                        <span>Año</span>
+                        <strong id="details-book-year">2024</strong>
                     </div>
                 </div>
+                <p id="details-book-description" class="details-description"></p>
             </div>
-            <div class="form-actions" style="margin-top: 1.5rem; border-top: 1px solid var(--border-color); padding-top: 1rem;">
-                <button type="button" class="btn-primary" id="close-details-bottom-btn" style="flex: none; min-width: 100px;">Cerrar</button>
+            <div class="form-actions">
+                <button type="button" class="btn-secondary btn-secondary-accent" id="details-toggle-status-btn">Prestar</button>
+                <button type="button" class="btn-primary" id="details-edit-btn">Editar</button>
+                <button type="button" class="hidden-control" id="close-details-bottom-btn">Cerrar</button>
             </div>
         </div>
     </div>
 
-    <!-- Modal de Confirmación para Restaurar Catálogo -->
     <div class="modal-overlay" id="reset-confirm-modal">
-        <div class="modal-content" style="max-width: 400px; text-align: center;">
-            <h3 class="modal-title" style="margin-bottom: 1rem;">¿Restaurar Catálogo?</h3>
-            <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">¿Estás seguro de que deseas restaurar el catálogo inicial? Se perderán todos tus cambios guardados.</p>
-            <div class="form-actions" style="justify-content: center;">
+        <div class="modal-content modal-content-small">
+            <h3 class="modal-title centered-title">Restaurar catálogo</h3>
+            <p class="modal-copy">Se perderán todos los cambios guardados y volverás al catálogo base.</p>
+            <div class="form-actions form-actions-centered">
                 <button type="button" class="btn-secondary" id="reset-confirm-cancel-btn">Cancelar</button>
                 <button type="button" class="btn-danger" id="reset-confirm-btn">Restaurar</button>
             </div>
         </div>
     </div>
 
-    <!-- Contenedor de Notificaciones Toast -->
     <div id="toast-container" class="toast-container"></div>
-
-    <footer class="app-footer">
-        <p>&copy; 2026 BiblioTech. Todos los derechos reservados.</p>
-    </footer>
 
     <script type="module" src="js/app.js"></script>
 </body>
