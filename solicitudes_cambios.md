@@ -165,3 +165,10 @@ Cambio solicitado. Modularización del Renderizador de Libros (js/render.js).
 Motivo del cambio. Extraer la lógica de renderizado del listado/malla de libros del catálogo y el generador de estrellas de calificación a un módulo independiente.
 Responsable. ikisita2004
 Fecha de aprobación. 2026-07-09
+
+---
+
+Cambio solicitado. Modularización del Dashboard de Estadísticas (js/stats.js).
+Motivo del cambio. Aislar la lógica de cálculo y actualización en el DOM de los indicadores clave de la biblioteca (total, disponibles, prestados, porcentaje de disponibilidad) en un archivo modular stats.js.
+Responsable. ikisita2004
+Fecha de aprobación. 2026-07-09

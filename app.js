@@ -1,11 +1,13 @@
 import { getBooks, setBooks, getShowOnlyFavorites, setShowOnlyFavorites, initialBooks } from "./js/state.js";
 import { showToast } from "./js/toast.js";
 import { renderBooks, getStarsHtml } from "./js/render.js";
+import { updateStatistics } from "./js/stats.js";
 
 // Vincular a window para compatibilidad temporal en este archivo
 window.showToast = showToast;
 window.renderBooks = renderBooks;
 window.getStarsHtml = getStarsHtml;
+window.updateStatistics = updateStatistics;
 
 // Vincular getters y setters globales para retrocompatibilidad modular
 Object.defineProperty(window, "books", {
@@ -36,11 +38,7 @@ const genreFilter = document.getElementById("genre-filter");
 const statusFilter = document.getElementById("status-filter");
 const sortSelect = document.getElementById("sort-select");
 
-// Referencias del Dashboard de estadísticas
-const statsTotal = document.getElementById("stats-total");
-const statsAvailable = document.getElementById("stats-available");
-const statsBorrowed = document.getElementById("stats-borrowed");
-const statsPercentage = document.getElementById("stats-percentage");
+
 
 
 
@@ -364,20 +362,7 @@ function saveToLocalStorage() {
     localStorage.setItem("biblio_books", JSON.stringify(books));
 }
 
-/**
- * Calcula y actualiza las estadísticas de la biblioteca en el dashboard
- */
-function updateStatistics() {
-    const total = books.length;
-    const available = books.filter(b => b.status === "available").length;
-    const borrowed = total - available;
-    const percentage = total > 0 ? Math.round((available / total) * 100) : 0;
 
-    statsTotal.textContent = total;
-    statsAvailable.textContent = available;
-    statsBorrowed.textContent = borrowed;
-    statsPercentage.textContent = `${percentage}%`;
-}
 
 
 
