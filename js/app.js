@@ -1,18 +1,18 @@
-import { getBooks, setBooks, getShowOnlyFavorites, setShowOnlyFavorites, initialBooks } from "./js/state.js";
-import { showToast } from "./js/toast.js";
-import { renderBooks, getStarsHtml } from "./js/render.js";
-import { updateStatistics } from "./js/stats.js";
-import { handleSearch } from "./js/filter.js";
+import { getBooks, setBooks, getShowOnlyFavorites, setShowOnlyFavorites, initialBooks } from "./state.js";
+import { showToast } from "./toast.js";
+import { renderBooks } from "./render.js";
+import { updateStatistics } from "./stats.js";
+import { handleSearch } from "./filter.js";
 import {
     openModal, closeModal, openEditModal, closeEditModal,
     openDetailsModal, closeDetailsModal, openConfirmModal, closeConfirmModal,
     openResetConfirmModal, closeResetConfirmModal, getBookIdToDelete, setBookIdToDelete
-} from "./js/modals.js";
+} from "./modals.js";
 import {
     saveToLocalStorage, initTheme, applyTheme, toggleTheme,
     initView, toggleView
-} from "./js/storage.js";
-import { initEvents } from "./js/events.js";
+} from "./storage.js";
+import { initEvents } from "./events.js";
 
 
 
