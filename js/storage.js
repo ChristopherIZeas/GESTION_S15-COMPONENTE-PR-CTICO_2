@@ -1,16 +1,8 @@
-// Módulo de Persistencia Local y Temas
-import { getBooks } from "./state.js";
+// Módulo de preferencias locales de tema y vista
 
 const themeToggle = document.getElementById("theme-toggle");
 const viewToggle = document.getElementById("view-toggle");
 const booksGrid = document.getElementById("books-grid");
-
-/**
- * Guarda el estado actual de los libros en localStorage
- */
-export function saveToLocalStorage() {
-    localStorage.setItem("biblio_books", JSON.stringify(getBooks()));
-}
 
 // Funciones para el control de temas
 export function initTheme() {
