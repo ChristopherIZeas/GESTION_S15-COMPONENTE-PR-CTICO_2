@@ -186,3 +186,10 @@ Cambio solicitado. Modularización de la Gestión de Modales (js/modals.js).
 Motivo del cambio. Separar el control de visualización y restauración de campos de todos los modales de la UI (añadir, editar, detalle, eliminar, restaurar) a su propio archivo modular js/modals.js.
 Responsable. ikisita2004
 Fecha de aprobación. 2026-07-09
+
+---
+
+Cambio solicitado. Modularización del Subsistema de Almacenamiento y Temas (js/storage.js).
+Motivo del cambio. Separar la persistencia del catálogo en localStorage, la inicialización y el cambio de temas (claro/oscuro) y vistas (cuadrícula/lista) en un módulo independiente js/storage.js.
+Responsable. ikisita2004
+Fecha de aprobación. 2026-07-09

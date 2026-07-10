@@ -8,6 +8,10 @@ import {
     openDetailsModal, closeDetailsModal, openConfirmModal, closeConfirmModal,
     openResetConfirmModal, closeResetConfirmModal, getBookIdToDelete, setBookIdToDelete
 } from "./js/modals.js";
+import {
+    saveToLocalStorage, initTheme, applyTheme, toggleTheme,
+    initView, toggleView
+} from "./js/storage.js";
 
 // Vincular a window para compatibilidad temporal en este archivo
 window.showToast = showToast;
@@ -23,6 +27,12 @@ window.openDetailsModal = openDetailsModal;
 window.closeDetailsModal = closeDetailsModal;
 window.openConfirmModal = openConfirmModal;
 window.closeConfirmModal = closeConfirmModal;
+window.saveToLocalStorage = saveToLocalStorage;
+window.initTheme = initTheme;
+window.applyTheme = applyTheme;
+window.toggleTheme = toggleTheme;
+window.initView = initView;
+window.toggleView = toggleView;
 window.openResetConfirmModal = openResetConfirmModal;
 window.closeResetConfirmModal = closeResetConfirmModal;
 
@@ -279,12 +289,7 @@ function toggleFavorite(bookId) {
     }
 }
 
-/**
- * Guarda el estado actual de los libros en localStorage
- */
-function saveToLocalStorage() {
-    localStorage.setItem("biblio_books", JSON.stringify(books));
-}
+
 
 
 
@@ -408,63 +413,9 @@ function executeResetCatalog() {
     showToast("Catálogo inicial restaurado con éxito.", "info");
 }
 
-// Referencia al botón de tema
-const themeToggle = document.getElementById("theme-toggle");
 
-// Funciones para el control de temas
-function initTheme() {
-    const savedTheme = localStorage.getItem("biblio_theme") || "dark";
-    applyTheme(savedTheme);
-}
 
-function applyTheme(theme) {
-    if (theme === "light") {
-        document.body.classList.add("light-theme");
-        document.body.classList.remove("dark-theme");
-        themeToggle.textContent = "🌙";
-    } else {
-        document.body.classList.add("dark-theme");
-        document.body.classList.remove("light-theme");
-        themeToggle.textContent = "☀️";
-    }
-    localStorage.setItem("biblio_theme", theme);
-}
 
-function toggleTheme() {
-    const isLight = document.body.classList.contains("light-theme");
-    applyTheme(isLight ? "dark" : "light");
-}
-
-// Referencia al alternador de vista y funciones de vista
-const viewToggle = document.getElementById("view-toggle");
-
-function initView() {
-    const savedView = localStorage.getItem("biblio_view") || "grid";
-    if (savedView === "list") {
-        booksGrid.classList.remove("grid-view");
-        booksGrid.classList.add("list-view");
-        viewToggle.textContent = "⬜ Cuadrícula";
-    } else {
-        booksGrid.classList.remove("list-view");
-        booksGrid.classList.add("grid-view");
-        viewToggle.textContent = "📋 Lista";
-    }
-}
-
-function toggleView() {
-    const isGrid = booksGrid.classList.contains("grid-view");
-    if (isGrid) {
-        booksGrid.classList.remove("grid-view");
-        booksGrid.classList.add("list-view");
-        viewToggle.textContent = "⬜ Cuadrícula";
-        localStorage.setItem("biblio_view", "list");
-    } else {
-        booksGrid.classList.remove("list-view");
-        booksGrid.classList.add("grid-view");
-        viewToggle.textContent = "📋 Lista";
-        localStorage.setItem("biblio_view", "grid");
-    }
-}
 
 // Event Listeners
 searchInput.addEventListener("input", handleSearch);
