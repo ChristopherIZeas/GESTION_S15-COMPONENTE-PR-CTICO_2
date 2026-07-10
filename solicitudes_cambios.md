@@ -179,3 +179,10 @@ Cambio solicitado. Modularización del Subsistema de Búsqueda, Filtro y Ordenam
 Motivo del cambio. Mover la función de búsqueda interactiva y filtros por género, disponibilidad y favoritos, así como la clasificación por criterios, a su propio archivo modular js/filter.js.
 Responsable. ikisita2004
 Fecha de aprobación. 2026-07-09
+
+---
+
+Cambio solicitado. Modularización de la Gestión de Modales (js/modals.js).
+Motivo del cambio. Separar el control de visualización y restauración de campos de todos los modales de la UI (añadir, editar, detalle, eliminar, restaurar) a su propio archivo modular js/modals.js.
+Responsable. ikisita2004
+Fecha de aprobación. 2026-07-09

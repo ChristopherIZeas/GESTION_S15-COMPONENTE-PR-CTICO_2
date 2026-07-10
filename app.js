@@ -3,6 +3,11 @@ import { showToast } from "./js/toast.js";
 import { renderBooks, getStarsHtml } from "./js/render.js";
 import { updateStatistics } from "./js/stats.js";
 import { handleSearch } from "./js/filter.js";
+import {
+    openModal, closeModal, openEditModal, closeEditModal,
+    openDetailsModal, closeDetailsModal, openConfirmModal, closeConfirmModal,
+    openResetConfirmModal, closeResetConfirmModal, getBookIdToDelete, setBookIdToDelete
+} from "./js/modals.js";
 
 // Vincular a window para compatibilidad temporal en este archivo
 window.showToast = showToast;
@@ -10,6 +15,22 @@ window.renderBooks = renderBooks;
 window.getStarsHtml = getStarsHtml;
 window.updateStatistics = updateStatistics;
 window.handleSearch = handleSearch;
+window.openModal = openModal;
+window.closeModal = closeModal;
+window.openEditModal = openEditModal;
+window.closeEditModal = closeEditModal;
+window.openDetailsModal = openDetailsModal;
+window.closeDetailsModal = closeDetailsModal;
+window.openConfirmModal = openConfirmModal;
+window.closeConfirmModal = closeConfirmModal;
+window.openResetConfirmModal = openResetConfirmModal;
+window.closeResetConfirmModal = closeResetConfirmModal;
+
+Object.defineProperty(window, "bookIdToDelete", {
+    get() { return getBookIdToDelete(); },
+    set(val) { setBookIdToDelete(val); },
+    configurable: true
+});
 
 // Vincular getters y setters globales para retrocompatibilidad modular
 Object.defineProperty(window, "books", {
@@ -164,44 +185,7 @@ function updateFormGenreSelects() {
     populateSelect(editGenreSelect);
 }
 
-// Funciones para el Modal
-function openModal() {
-    addBookModal.classList.add("active");
-}
 
-// Cerrar modal
-function closeModal() {
-    addBookModal.classList.remove("active");
-    addBookForm.reset();
-    genreCustomInput.style.display = "none";
-    genreCustomInput.required = false;
-}
-
-// Funciones para el Modal de Edición
-function openEditModal(bookId) {
-    const book = books.find(b => b.id === bookId);
-    if (book) {
-        editBookId.value = book.id;
-        editTitleInput.value = book.title;
-        editAuthorInput.value = book.author;
-        
-        // Cargar género en select
-        editGenreSelect.value = book.genre;
-        editGenreCustomInput.style.display = "none";
-        editGenreCustomInput.required = false;
-        editGenreCustomInput.value = "";
-        
-        editYearInput.value = book.year;
-        editBookModal.classList.add("active");
-    }
-}
-
-function closeEditModal() {
-    editBookModal.classList.remove("active");
-    editBookForm.reset();
-    editGenreCustomInput.style.display = "none";
-    editGenreCustomInput.required = false;
-}
 
 function handleEditBook(e) {
     e.preventDefault();
@@ -259,28 +243,7 @@ function handleEditBook(e) {
     }
 }
 
-// Funciones para el Modal de Detalle
-function openDetailsModal(bookId) {
-    const book = books.find(b => b.id === bookId);
-    if (book) {
-        detailsTitle.textContent = book.title;
-        detailsAuthor.textContent = `por ${book.author}`;
-        detailsGenre.textContent = book.genre;
-        detailsYear.textContent = book.year;
-        
-        const isAvailable = book.status === "available";
-        detailsBadge.className = `book-badge ${isAvailable ? 'badge-available' : 'badge-borrowed'}`;
-        detailsBadge.textContent = isAvailable ? "Disponible" : "Prestado";
-        
-        detailsDescription.textContent = `Esta es una obra destacada del género "${book.genre}", escrita originalmente por el reconocido autor ${book.author} y publicada en el año ${book.year}. Un título indispensable para ampliar la colección.`;
-        
-        detailsBookModal.classList.add("active");
-    }
-}
 
-function closeDetailsModal() {
-    detailsBookModal.classList.remove("active");
-}
 
 
 
@@ -406,17 +369,7 @@ function toggleBookStatus(bookId) {
     }
 }
 
-// Funciones para el modal de confirmación
-function openConfirmModal(bookId) {
-    bookIdToDelete = bookId;
-    confirmModal.classList.add("active");
-}
 
-// Cerrar confirmación
-function closeConfirmModal() {
-    bookIdToDelete = null;
-    confirmModal.classList.remove("active");
-}
 
 function executeDeleteBook() {
     if (bookIdToDelete !== null) {
@@ -437,13 +390,6 @@ function executeDeleteBook() {
 }
 
 // Funciones para restaurar el catálogo inicial
-function openResetConfirmModal() {
-    resetConfirmModal.classList.add("active");
-}
-
-function closeResetConfirmModal() {
-    resetConfirmModal.classList.remove("active");
-}
 
 function executeResetCatalog() {
     books = [...initialBooks];
