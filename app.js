@@ -151,12 +151,35 @@ function handleAddBook(e) {
     closeModal();
 }
 
+/**
+ * Alterna el estado de préstamo de un libro
+ * @param {number} bookId - ID del libro a alternar
+ */
+function toggleBookStatus(bookId) {
+    const book = books.find(b => b.id === bookId);
+    if (book) {
+        book.status = book.status === "available" ? "borrowed" : "available";
+        handleSearch(); // Recargar respetando filtros
+    }
+}
+
 // Event Listeners
 searchInput.addEventListener("input", handleSearch);
 addBookBtn.addEventListener("click", openModal);
 closeModalBtn.addEventListener("click", closeModal);
 cancelModalBtn.addEventListener("click", closeModal);
 addBookForm.addEventListener("submit", handleAddBook);
+
+// Alternar estado de préstamo/devolución al hacer click
+booksGrid.addEventListener("click", (e) => {
+    if (e.target.classList.contains("toggle-status-btn")) {
+        const card = e.target.closest(".book-card");
+        if (card) {
+            const bookId = parseInt(card.dataset.id);
+            toggleBookStatus(bookId);
+        }
+    }
+});
 
 // Cerrar modal al hacer click fuera del contenido
 addBookModal.addEventListener("click", (e) => {
