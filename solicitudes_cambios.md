@@ -207,3 +207,10 @@ Cambio solicitado. Consolidación y Simplificación de app.js.
 Motivo del cambio. Simplificar app.js como el orquestador y punto de entrada de la aplicación, removiendo referencias de selectores globales de DOM no usadas y estructurando limpiamente las importaciones.
 Responsable. ikisita2004
 Fecha de aprobación. 2026-07-09
+
+---
+
+Cambio solicitado. Desacoplamiento completo del objeto global Window.
+Motivo del cambio. Eliminar todas las asignaciones directas y propiedades del objeto global window en app.js para cumplir con el estándar y encapsulación estricta de ES Modules.
+Responsable. EduardRH
+Fecha de aprobación. 2026-07-09

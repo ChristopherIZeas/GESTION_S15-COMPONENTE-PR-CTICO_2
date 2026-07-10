@@ -14,52 +14,7 @@ import {
 } from "./js/storage.js";
 import { initEvents } from "./js/events.js";
 
-// Vincular a window para compatibilidad temporal en este archivo
-window.showToast = showToast;
-window.renderBooks = renderBooks;
-window.getStarsHtml = getStarsHtml;
-window.updateStatistics = updateStatistics;
-window.handleSearch = handleSearch;
-window.openModal = openModal;
-window.closeModal = closeModal;
-window.openEditModal = openEditModal;
-window.closeEditModal = closeEditModal;
-window.openDetailsModal = openDetailsModal;
-window.closeDetailsModal = closeDetailsModal;
-window.openConfirmModal = openConfirmModal;
-window.closeConfirmModal = closeConfirmModal;
-window.saveToLocalStorage = saveToLocalStorage;
-window.initTheme = initTheme;
-window.applyTheme = applyTheme;
-window.toggleTheme = toggleTheme;
-window.initView = initView;
-window.toggleView = toggleView;
-window.openResetConfirmModal = openResetConfirmModal;
-window.closeResetConfirmModal = closeResetConfirmModal;
 
-Object.defineProperty(window, "bookIdToDelete", {
-    get() { return getBookIdToDelete(); },
-    set(val) { setBookIdToDelete(val); },
-    configurable: true
-});
-
-// Vincular getters y setters globales para retrocompatibilidad modular
-Object.defineProperty(window, "books", {
-    get() { return getBooks(); },
-    set(val) { setBooks(val); },
-    configurable: true
-});
-
-Object.defineProperty(window, "showOnlyFavorites", {
-    get() { return getShowOnlyFavorites(); },
-    set(val) { setShowOnlyFavorites(val); },
-    configurable: true
-});
-
-Object.defineProperty(window, "initialBooks", {
-    get() { return initialBooks; },
-    configurable: true
-});
 
 /**
  * Actualiza dinámicamente las opciones del selector de géneros
