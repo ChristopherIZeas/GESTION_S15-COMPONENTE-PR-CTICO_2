@@ -71,6 +71,7 @@
                     <option value="borrowed">Prestados</option>
                 </select>
                 <button id="view-toggle" class="btn-secondary" aria-label="Alternar vista cuadrícula o lista">📋 Lista</button>
+                <button id="reset-catalog-btn" class="btn-danger-outline" aria-label="Restaurar catálogo inicial">🔄 Restaurar</button>
                 <button id="add-book-btn" class="btn-primary">➕ Agregar Libro</button>
             </div>
         </section>
@@ -198,6 +199,18 @@
             </div>
             <div class="form-actions" style="margin-top: 1.5rem; border-top: 1px solid var(--border-color); padding-top: 1rem;">
                 <button type="button" class="btn-primary" id="close-details-bottom-btn" style="flex: none; min-width: 100px;">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmación para Restaurar Catálogo -->
+    <div class="modal-overlay" id="reset-confirm-modal">
+        <div class="modal-content" style="max-width: 400px; text-align: center;">
+            <h3 class="modal-title" style="margin-bottom: 1rem;">¿Restaurar Catálogo?</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">¿Estás seguro de que deseas restaurar el catálogo inicial? Se perderán todos tus cambios guardados.</p>
+            <div class="form-actions" style="justify-content: center;">
+                <button type="button" class="btn-secondary" id="reset-confirm-cancel-btn">Cancelar</button>
+                <button type="button" class="btn-danger" id="reset-confirm-btn">Restaurar</button>
             </div>
         </div>
     </div>

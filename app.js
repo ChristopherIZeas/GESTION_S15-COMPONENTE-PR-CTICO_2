@@ -100,6 +100,12 @@ const detailsYear = document.getElementById("details-book-year");
 const detailsBadge = document.getElementById("details-book-badge");
 const detailsDescription = document.getElementById("details-book-description");
 
+// Referencias del botón y modal de restauración de catálogo
+const resetCatalogBtn = document.getElementById("reset-catalog-btn");
+const resetConfirmModal = document.getElementById("reset-confirm-modal");
+const resetConfirmCancelBtn = document.getElementById("reset-confirm-cancel-btn");
+const resetConfirmBtn = document.getElementById("reset-confirm-btn");
+
 /**
  * Renderiza la lista de libros en la cuadrícula del DOM
  * @param {Array} booksToRender - Lista de libros a renderizar
@@ -541,6 +547,31 @@ function executeDeleteBook() {
     }
 }
 
+// Funciones para restaurar el catálogo inicial
+function openResetConfirmModal() {
+    resetConfirmModal.classList.add("active");
+}
+
+function closeResetConfirmModal() {
+    resetConfirmModal.classList.remove("active");
+}
+
+function executeResetCatalog() {
+    books = [...initialBooks];
+    saveToLocalStorage();
+    
+    // Limpiar buscador y filtros
+    searchInput.value = "";
+    genreFilter.value = "all";
+    statusFilter.value = "all";
+    
+    updateGenreOptions();
+    handleSearch();
+    updateStatistics();
+    closeResetConfirmModal();
+    showToast("Catálogo inicial restaurado con éxito.", "info");
+}
+
 // Referencia al botón de tema
 const themeToggle = document.getElementById("theme-toggle");
 
@@ -614,6 +645,10 @@ editBookForm.addEventListener("submit", handleEditBook);
 
 closeDetailsModalBtn.addEventListener("click", closeDetailsModal);
 closeDetailsBottomBtn.addEventListener("click", closeDetailsModal);
+
+resetCatalogBtn.addEventListener("click", openResetConfirmModal);
+resetConfirmCancelBtn.addEventListener("click", closeResetConfirmModal);
+resetConfirmBtn.addEventListener("click", executeResetCatalog);
 
 confirmCancelBtn.addEventListener("click", closeConfirmModal);
 confirmDeleteBtn.addEventListener("click", executeDeleteBook);
@@ -691,6 +726,13 @@ detailsBookModal.addEventListener("click", (e) => {
 confirmModal.addEventListener("click", (e) => {
     if (e.target === confirmModal) {
         closeConfirmModal();
+    }
+});
+
+// Cerrar modal de confirmación de restauración al hacer click fuera
+resetConfirmModal.addEventListener("click", (e) => {
+    if (e.target === resetConfirmModal) {
+        closeResetConfirmModal();
     }
 });
 

@@ -102,3 +102,10 @@ Cambio solicitado. Filtro por estado de disponibilidad (Todos / Disponibles / Pr
 Motivo del cambio. Habilitar la capacidad de filtrar dinámicamente los libros en el catálogo según si se encuentran prestados o disponibles.
 Responsable. aalvarador8
 Fecha de aprobación. 2026-07-09
+
+---
+
+Cambio solicitado. Restauración del catálogo inicial de libros.
+Motivo del cambio. Proveer un botón de restauración protegido por una ventana modal de confirmación, para restablecer los datos de la biblioteca virtual al estado original de prueba.
+Responsable. aalvarador8
+Fecha de aprobación. 2026-07-09
