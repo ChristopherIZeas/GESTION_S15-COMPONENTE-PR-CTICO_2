@@ -116,3 +116,10 @@ Cambio solicitado. Ordenamiento de libros del catálogo por múltiples criterios
 Motivo del cambio. Habilitar la capacidad de ordenar dinámicamente los libros en el catálogo por título (A-Z, Z-A), año de publicación (ascendente y descendente) y calificación.
 Responsable. aalvarador8
 Fecha de aprobación. 2026-07-09
+
+---
+
+Cambio solicitado. Lista de Favoritos e icono de guardado rápido.
+Motivo del cambio. Habilitar la posibilidad de marcar libros como favoritos con un icono de corazón directamente sobre la tarjeta y filtrar el catálogo para mostrar solo los favoritos seleccionados.
+Responsable. aalvarador8
+Fecha de aprobación. 2026-07-09

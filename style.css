@@ -797,3 +797,38 @@ body {
 .star:hover {
     transform: scale(1.2);
 }
+
+/* Favoritos */
+.favorite-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    cursor: pointer;
+    transition: transform var(--transition-fast), opacity var(--transition-fast);
+    color: var(--text-muted);
+    z-index: 5;
+    opacity: 0.4;
+}
+
+.favorite-btn.active {
+    color: #ef4444;
+    opacity: 1;
+    filter: drop-shadow(0 0 5px rgba(239, 68, 68, 0.4));
+}
+
+.favorite-btn:hover {
+    transform: scale(1.2);
+    opacity: 1;
+}
+
+.btn-secondary.active-filter {
+    background-color: rgba(239, 68, 68, 0.15);
+    border-color: #ef4444;
+    color: #ef4444;
+}
+.btn-secondary.active-filter:hover {
+    background-color: rgba(239, 68, 68, 0.25);
+}

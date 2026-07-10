@@ -107,6 +107,10 @@ const resetConfirmModal = document.getElementById("reset-confirm-modal");
 const resetConfirmCancelBtn = document.getElementById("reset-confirm-cancel-btn");
 const resetConfirmBtn = document.getElementById("reset-confirm-btn");
 
+// Referencia del botón de favoritos
+const favoritesToggleBtn = document.getElementById("favorites-toggle-btn");
+let showOnlyFavorites = false;
+
 /**
  * Renderiza la lista de libros en la cuadrícula del DOM
  * @param {Array} booksToRender - Lista de libros a renderizar
@@ -136,7 +140,10 @@ function renderBooks(booksToRender) {
         const buttonText = isAvailable ? "Prestar" : "Devolver";
         const ratingHtml = getStarsHtml(book.rating || 0);
 
+        const isFav = book.favorite ? "active" : "";
+
         bookCard.innerHTML = `
+            <button class="favorite-btn ${isFav}" aria-label="Favorito">❤️</button>
             <div class="book-info">
                 <span class="book-badge ${badgeClass}">${badgeText}</span>
                 <h3 class="book-title" title="${book.title}">${book.title}</h3>
@@ -174,7 +181,8 @@ function handleSearch() {
         );
         const matchesGenre = selectedGenre === "all" || book.genre === selectedGenre;
         const matchesStatus = selectedStatus === "all" || book.status === selectedStatus;
-        return matchesQuery && matchesGenre && matchesStatus;
+        const matchesFav = !showOnlyFavorites || book.favorite;
+        return matchesQuery && matchesGenre && matchesStatus && matchesFav;
     });
     
     const sortBy = sortSelect.value;
@@ -396,6 +404,23 @@ function rateBook(bookId, ratingValue) {
         saveToLocalStorage();
         handleSearch(); // Recargar respetando filtros actuales
         showToast(`Calificaste "${book.title}" con ${ratingValue} estrellas.`, "success");
+    }
+}
+
+/**
+ * Alterna el estado de favorito de un libro
+ * @param {number} bookId - ID del libro
+ */
+function toggleFavorite(bookId) {
+    const book = books.find(b => b.id === bookId);
+    if (book) {
+        book.favorite = !book.favorite;
+        saveToLocalStorage();
+        handleSearch();
+        showToast(
+            book.favorite ? `"${book.title}" añadido a Favoritos.` : `"${book.title}" eliminado de Favoritos.`,
+            book.favorite ? "success" : "info"
+        );
     }
 }
 
@@ -674,6 +699,18 @@ confirmDeleteBtn.addEventListener("click", executeDeleteBook);
 themeToggle.addEventListener("click", toggleTheme);
 viewToggle.addEventListener("click", toggleView);
 
+favoritesToggleBtn.addEventListener("click", () => {
+    showOnlyFavorites = !showOnlyFavorites;
+    if (showOnlyFavorites) {
+        favoritesToggleBtn.classList.add("active-filter");
+        favoritesToggleBtn.innerHTML = "❤️ Solo Favoritos";
+    } else {
+        favoritesToggleBtn.classList.remove("active-filter");
+        favoritesToggleBtn.innerHTML = "❤️ Favoritos";
+    }
+    handleSearch();
+});
+
 // Eventos de selección de género personalizado
 genreSelect.addEventListener("change", (e) => {
     if (e.target.value === "custom") {
@@ -717,6 +754,8 @@ booksGrid.addEventListener("click", (e) => {
     } else if (e.target.classList.contains("star")) {
         const ratingVal = parseInt(e.target.dataset.value);
         rateBook(bookId, ratingVal);
+    } else if (e.target.closest(".favorite-btn")) {
+        toggleFavorite(bookId);
     }
 });
 
