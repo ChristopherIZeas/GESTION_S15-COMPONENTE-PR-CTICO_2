@@ -25,6 +25,13 @@ export function initEvents(handlers) {
     const themeToggle = document.getElementById("theme-toggle");
     const viewToggle = document.getElementById("view-toggle");
     const favoritesToggleBtn = document.getElementById("favorites-toggle-btn");
+    const addRatingInput = document.getElementById("book-rating-input");
+    const editRatingInput = document.getElementById("edit-book-rating-input");
+    const detailsToggleStatusBtn = document.getElementById("details-toggle-status-btn");
+    const detailsEditBtn = document.getElementById("details-edit-btn");
+    const sortCycleBtn = document.getElementById("sort-cycle-btn");
+    const genrePills = document.getElementById("genre-pills");
+    const statusGroup = document.querySelector(".status-group");
 
     const genreSelect = document.getElementById("book-genre-select");
     const genreCustomInput = document.getElementById("book-genre-custom-input");
@@ -55,6 +62,8 @@ export function initEvents(handlers) {
 
     if (closeDetailsModalBtn) closeDetailsModalBtn.addEventListener("click", handlers.closeDetailsModal);
     if (closeDetailsBottomBtn) closeDetailsBottomBtn.addEventListener("click", handlers.closeDetailsModal);
+    if (detailsToggleStatusBtn) detailsToggleStatusBtn.addEventListener("click", handlers.toggleActiveDetailsBookStatus);
+    if (detailsEditBtn) detailsEditBtn.addEventListener("click", handlers.editActiveDetailsBook);
 
     if (resetCatalogBtn) resetCatalogBtn.addEventListener("click", handlers.openResetConfirmModal);
     if (resetConfirmCancelBtn) resetConfirmCancelBtn.addEventListener("click", handlers.closeResetConfirmModal);
@@ -66,17 +75,58 @@ export function initEvents(handlers) {
     if (themeToggle) themeToggle.addEventListener("click", handlers.toggleTheme);
     if (viewToggle) viewToggle.addEventListener("click", handlers.toggleView);
 
+    if (sortCycleBtn && sortSelect) {
+        const sortLabels = {
+            "title-asc": '<i class="fa-solid fa-arrow-up-a-z"></i><span>Título</span>',
+            "title-desc": '<i class="fa-solid fa-arrow-down-z-a"></i><span>Título</span>',
+            "year-desc": '<i class="fa-regular fa-calendar"></i><span>Año</span>',
+            "year-asc": '<i class="fa-regular fa-calendar"></i><span>Año asc</span>',
+            "rating-desc": '<i class="fa-solid fa-star"></i><span>Rating</span>'
+        };
+        sortCycleBtn.innerHTML = sortLabels[sortSelect.value] || sortLabels["title-asc"];
+        sortCycleBtn.addEventListener("click", () => {
+            const values = ["title-asc", "title-desc", "year-desc", "year-asc", "rating-desc"];
+            const currentIndex = values.indexOf(sortSelect.value);
+            const nextValue = values[(currentIndex + 1) % values.length];
+            sortSelect.value = nextValue;
+            sortCycleBtn.innerHTML = sortLabels[nextValue];
+            handlers.handleSearch();
+        });
+    }
+
     if (favoritesToggleBtn) {
         favoritesToggleBtn.addEventListener("click", () => {
             const current = handlers.getShowOnlyFavorites();
             handlers.setShowOnlyFavorites(!current);
             if (handlers.getShowOnlyFavorites()) {
                 favoritesToggleBtn.classList.add("active-filter");
-                favoritesToggleBtn.innerHTML = "❤️ Solo Favoritos";
+                favoritesToggleBtn.innerHTML = '<i class="fa-solid fa-heart"></i><span>Favoritos</span>';
             } else {
                 favoritesToggleBtn.classList.remove("active-filter");
-                favoritesToggleBtn.innerHTML = "❤️ Favoritos";
+                favoritesToggleBtn.innerHTML = '<i class="fa-regular fa-heart"></i><span>Favoritos</span>';
             }
+            handlers.handleSearch();
+        });
+    }
+
+    if (genrePills && genreFilter) {
+        genrePills.addEventListener("click", (e) => {
+            const button = e.target.closest("[data-genre]");
+            if (!button) return;
+            genreFilter.value = button.dataset.genre;
+            genrePills.querySelectorAll(".filter-pill").forEach((pill) => pill.classList.remove("active"));
+            button.classList.add("active");
+            handlers.handleSearch();
+        });
+    }
+
+    if (statusGroup && statusFilter) {
+        statusGroup.addEventListener("click", (e) => {
+            const button = e.target.closest("[data-status]");
+            if (!button) return;
+            statusFilter.value = button.dataset.status;
+            statusGroup.querySelectorAll(".filter-pill").forEach((pill) => pill.classList.remove("active"));
+            button.classList.add("active");
             handlers.handleSearch();
         });
     }
@@ -108,6 +158,19 @@ export function initEvents(handlers) {
             }
         });
     }
+
+    [addRatingInput, editRatingInput].forEach((ratingContainer) => {
+        if (!ratingContainer) return;
+        ratingContainer.addEventListener("click", (e) => {
+            const star = e.target.closest(".rating-star");
+            if (!star) return;
+            const value = parseInt(star.dataset.value);
+            ratingContainer.dataset.rating = value;
+            ratingContainer.querySelectorAll(".rating-star").forEach((item) => {
+                item.classList.toggle("filled", parseInt(item.dataset.value) <= value);
+            });
+        });
+    });
 
     if (booksGrid) {
         booksGrid.addEventListener("click", (e) => {
