@@ -12,6 +12,7 @@ import {
     saveToLocalStorage, initTheme, applyTheme, toggleTheme,
     initView, toggleView
 } from "./js/storage.js";
+import { initEvents } from "./js/events.js";
 
 // Vincular a window para compatibilidad temporal en este archivo
 window.showToast = showToast;
@@ -417,132 +418,37 @@ function executeResetCatalog() {
 
 
 
-// Event Listeners
-searchInput.addEventListener("input", handleSearch);
-genreFilter.addEventListener("change", handleSearch);
-statusFilter.addEventListener("change", handleSearch);
-sortSelect.addEventListener("change", handleSearch);
-addBookBtn.addEventListener("click", openModal);
-closeModalBtn.addEventListener("click", closeModal);
-cancelModalBtn.addEventListener("click", closeModal);
-addBookForm.addEventListener("submit", handleAddBook);
-
-closeEditModalBtn.addEventListener("click", closeEditModal);
-cancelEditModalBtn.addEventListener("click", closeEditModal);
-editBookForm.addEventListener("submit", handleEditBook);
-
-closeDetailsModalBtn.addEventListener("click", closeDetailsModal);
-closeDetailsBottomBtn.addEventListener("click", closeDetailsModal);
-
-resetCatalogBtn.addEventListener("click", openResetConfirmModal);
-resetConfirmCancelBtn.addEventListener("click", closeResetConfirmModal);
-resetConfirmBtn.addEventListener("click", executeResetCatalog);
-
-confirmCancelBtn.addEventListener("click", closeConfirmModal);
-confirmDeleteBtn.addEventListener("click", executeDeleteBook);
-themeToggle.addEventListener("click", toggleTheme);
-viewToggle.addEventListener("click", toggleView);
-
-favoritesToggleBtn.addEventListener("click", () => {
-    showOnlyFavorites = !showOnlyFavorites;
-    if (showOnlyFavorites) {
-        favoritesToggleBtn.classList.add("active-filter");
-        favoritesToggleBtn.innerHTML = "❤️ Solo Favoritos";
-    } else {
-        favoritesToggleBtn.classList.remove("active-filter");
-        favoritesToggleBtn.innerHTML = "❤️ Favoritos";
-    }
-    handleSearch();
-});
-
-// Eventos de selección de género personalizado
-genreSelect.addEventListener("change", (e) => {
-    if (e.target.value === "custom") {
-        genreCustomInput.style.display = "block";
-        genreCustomInput.required = true;
-        genreCustomInput.focus();
-    } else {
-        genreCustomInput.style.display = "none";
-        genreCustomInput.required = false;
-        genreCustomInput.value = "";
-    }
-});
-
-editGenreSelect.addEventListener("change", (e) => {
-    if (e.target.value === "custom") {
-        editGenreCustomInput.style.display = "block";
-        editGenreCustomInput.required = true;
-        editGenreCustomInput.focus();
-    } else {
-        editGenreCustomInput.style.display = "none";
-        editGenreCustomInput.required = false;
-        editGenreCustomInput.value = "";
-    }
-});
-
-// Eventos en la cuadrícula de libros (Delegación de eventos)
-booksGrid.addEventListener("click", (e) => {
-    const card = e.target.closest(".book-card");
-    if (!card) return;
-    
-    const bookId = parseInt(card.dataset.id);
-    
-    if (e.target.classList.contains("toggle-status-btn")) {
-        toggleBookStatus(bookId);
-    } else if (e.target.classList.contains("book-title")) {
-        openDetailsModal(bookId);
-    } else if (e.target.closest(".edit-book-btn")) {
-        openEditModal(bookId);
-    } else if (e.target.closest(".delete-book-btn")) {
-        openConfirmModal(bookId);
-    } else if (e.target.classList.contains("star")) {
-        const ratingVal = parseInt(e.target.dataset.value);
-        rateBook(bookId, ratingVal);
-    } else if (e.target.closest(".favorite-btn")) {
-        toggleFavorite(bookId);
-    }
-});
-
-// Cerrar modal de adición al hacer click fuera
-addBookModal.addEventListener("click", (e) => {
-    if (e.target === addBookModal) {
-        closeModal();
-    }
-});
-
-// Cerrar modal de edición al hacer click fuera
-editBookModal.addEventListener("click", (e) => {
-    if (e.target === editBookModal) {
-        closeEditModal();
-    }
-});
-
-// Cerrar modal de detalles al hacer click fuera
-detailsBookModal.addEventListener("click", (e) => {
-    if (e.target === detailsBookModal) {
-        closeDetailsModal();
-    }
-});
-
-// Cerrar modal de confirmación al hacer click fuera
-confirmModal.addEventListener("click", (e) => {
-    if (e.target === confirmModal) {
-        closeConfirmModal();
-    }
-});
-
-// Cerrar modal de confirmación de restauración al hacer click fuera
-resetConfirmModal.addEventListener("click", (e) => {
-    if (e.target === resetConfirmModal) {
-        closeResetConfirmModal();
-    }
-});
-
-// Inicialización de la aplicación
+// Inicialización de la aplicación e inicio de Eventos
 document.addEventListener("DOMContentLoaded", () => {
     initTheme();
     initView();
     updateGenreOptions();
     renderBooks(books);
     updateStatistics();
+    
+    // Iniciar el enrutador de eventos modular
+    initEvents({
+        handleSearch,
+        openModal,
+        closeModal,
+        openEditModal,
+        closeEditModal,
+        openDetailsModal,
+        closeDetailsModal,
+        openConfirmModal,
+        closeConfirmModal,
+        openResetConfirmModal,
+        closeResetConfirmModal,
+        toggleTheme,
+        toggleView,
+        getShowOnlyFavorites,
+        setShowOnlyFavorites,
+        handleAddBook,
+        handleEditBook,
+        executeResetCatalog,
+        executeDeleteBook,
+        toggleBookStatus,
+        rateBook,
+        toggleFavorite
+    });
 });

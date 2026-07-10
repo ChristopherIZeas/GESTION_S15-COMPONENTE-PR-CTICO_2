@@ -193,3 +193,10 @@ Cambio solicitado. Modularización del Subsistema de Almacenamiento y Temas (js/
 Motivo del cambio. Separar la persistencia del catálogo en localStorage, la inicialización y el cambio de temas (claro/oscuro) y vistas (cuadrícula/lista) en un módulo independiente js/storage.js.
 Responsable. ikisita2004
 Fecha de aprobación. 2026-07-09
+
+---
+
+Cambio solicitado. Desacoplamiento de Controladores de Eventos (js/events.js).
+Motivo del cambio. Agrupar la suscripción a todos los listeners del DOM, delegación de clicks en la cuadrícula de libros y el cierre automático de modales al presionar fuera de ellos en una sola rutina de inicialización de eventos modularizada.
+Responsable. ikisita2004
+Fecha de aprobación. 2026-07-09
