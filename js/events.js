@@ -70,7 +70,13 @@ export function initEvents(handlers) {
     if (confirmCancelBtn) confirmCancelBtn.addEventListener("click", handlers.closeConfirmModal);
     if (confirmDeleteBtn) confirmDeleteBtn.addEventListener("click", handlers.executeDeleteBook);
     
-    if (themeToggle) themeToggle.addEventListener("click", handlers.toggleTheme);
+    if (themeToggle) {
+        themeToggle.addEventListener("click", (e) => {
+            const button = e.target.closest("[data-theme]");
+            if (!button) return;
+            handlers.setTheme(button.dataset.theme);
+        });
+    }
     if (viewToggle) viewToggle.addEventListener("click", handlers.toggleView);
 
     if (sortCycleBtn && sortSelect) {
@@ -174,9 +180,9 @@ export function initEvents(handlers) {
         booksGrid.addEventListener("click", (e) => {
             const card = e.target.closest(".book-card");
             if (!card) return;
-            const bookId = parseInt(card.dataset.id);
+            const bookId = card.dataset.id;
 
-            if (e.target.classList.contains("toggle-status-btn")) {
+            if (e.target.closest(".toggle-status-btn")) {
                 handlers.toggleBookStatus(bookId);
             } else if (e.target.classList.contains("book-title")) {
                 handlers.openDetailsModal(bookId);
@@ -184,8 +190,8 @@ export function initEvents(handlers) {
                 handlers.openEditModal(bookId);
             } else if (e.target.closest(".delete-book-btn")) {
                 handlers.openConfirmModal(bookId);
-            } else if (e.target.classList.contains("star")) {
-                const ratingVal = parseInt(e.target.dataset.value);
+            } else if (e.target.closest(".star")) {
+                const ratingVal = parseInt(e.target.closest(".star").dataset.value);
                 handlers.rateBook(bookId, ratingVal);
             } else if (e.target.closest(".favorite-btn")) {
                 handlers.toggleFavorite(bookId);
