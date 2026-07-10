@@ -996,18 +996,6 @@ body.light-theme .theme-switch.is-light .theme-option-dark {
     cursor: default;
 }
 
-.details-meta {
-    display: flex;
-    gap: 1rem;
-    margin: 0.2rem 0 1rem;
-}
-
-.details-meta strong {
-    display: block;
-    margin-top: 0.2rem;
-    color: var(--text-primary);
-}
-
 .details-description {
     line-height: 1.6;
 }
