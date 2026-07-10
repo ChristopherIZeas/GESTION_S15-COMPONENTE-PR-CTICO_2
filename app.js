@@ -1,4 +1,8 @@
 import { getBooks, setBooks, getShowOnlyFavorites, setShowOnlyFavorites, initialBooks } from "./js/state.js";
+import { showToast } from "./js/toast.js";
+
+// Vincular a window para compatibilidad temporal en este archivo
+window.showToast = showToast;
 
 // Vincular getters y setters globales para retrocompatibilidad modular
 Object.defineProperty(window, "books", {
@@ -36,8 +40,7 @@ const statsAvailable = document.getElementById("stats-available");
 const statsBorrowed = document.getElementById("stats-borrowed");
 const statsPercentage = document.getElementById("stats-percentage");
 
-// Referencia del contenedor Toast
-const toastContainer = document.getElementById("toast-container");
+
 
 // Inputs del formulario
 const titleInput = document.getElementById("book-title-input");
@@ -438,39 +441,7 @@ function updateStatistics() {
     statsPercentage.textContent = `${percentage}%`;
 }
 
-/**
- * Muestra una notificación toast dinámica
- * @param {string} message - Mensaje a mostrar
- * @param {string} type - Tipo de toast ("success" | "error" | "info")
- */
-function showToast(message, type = "success") {
-    const toast = document.createElement("div");
-    toast.className = `toast toast-${type}`;
-    toast.innerHTML = `
-        <span class="toast-message">${message}</span>
-        <button class="toast-close" aria-label="Cerrar notificación">&times;</button>
-    `;
-    toastContainer.appendChild(toast);
-    
-    // Forzar reflow para animación
-    setTimeout(() => toast.classList.add("show"), 10);
-    
-    const autoClose = setTimeout(() => {
-        dismissToast(toast);
-    }, 4000);
-    
-    toast.querySelector(".toast-close").addEventListener("click", () => {
-        clearTimeout(autoClose);
-        dismissToast(toast);
-    });
-}
 
-function dismissToast(toast) {
-    toast.classList.remove("show");
-    toast.addEventListener("transitionend", () => {
-        toast.remove();
-    });
-}
 
 function handleAddBook(e) {
     e.preventDefault();

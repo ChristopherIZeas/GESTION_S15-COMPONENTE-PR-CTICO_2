@@ -151,3 +151,10 @@ Cambio solicitado. Extracción de datos y estado global (js/state.js).
 Motivo del cambio. Extraer los datos iniciales (mock data) y las variables de estado reactivo global del catálogo a un archivo modular separado, exportando getters y setters de acceso.
 Responsable. ikisita2004
 Fecha de aprobación. 2026-07-09
+
+---
+
+Cambio solicitado. Modularización del componente de Notificaciones (js/toast.js).
+Motivo del cambio. Extraer la lógica de alertas flotantes temporales (toasts) a un módulo de JavaScript dedicado, desacoplándola del archivo principal y facilitando su reutilización.
+Responsable. ikisita2004
+Fecha de aprobación. 2026-07-09
