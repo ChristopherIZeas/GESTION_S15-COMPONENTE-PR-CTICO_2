@@ -81,3 +81,10 @@ Cambio solicitado. Vista detallada de la información de los libros.
 Motivo del cambio. Habilitar la visualización de la ficha técnica completa y una nota informativa/resumen de cada libro en una ventana modal dedicada al hacer clic sobre su título.
 Responsable. aalvarador8
 Fecha de aprobación. 2026-07-09
+
+---
+
+Cambio solicitado. Selección inteligente de género en formularios (dropdown + campo personalizado).
+Motivo del cambio. Evitar inconsistencias en los nombres de los géneros al forzar al usuario a seleccionar de una lista existente o elegir la opción "Otro" para crear uno nuevo dinámicamente.
+Responsable. aalvarador8
+Fecha de aprobación. 2026-07-09

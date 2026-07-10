@@ -67,7 +67,8 @@ const toastContainer = document.getElementById("toast-container");
 // Inputs del formulario
 const titleInput = document.getElementById("book-title-input");
 const authorInput = document.getElementById("book-author-input");
-const genreInput = document.getElementById("book-genre-input");
+const genreSelect = document.getElementById("book-genre-select");
+const genreCustomInput = document.getElementById("book-genre-custom-input");
 const yearInput = document.getElementById("book-year-input");
 
 // Referencias del modal de edición
@@ -78,7 +79,8 @@ const editBookForm = document.getElementById("edit-book-form");
 const editBookId = document.getElementById("edit-book-id");
 const editTitleInput = document.getElementById("edit-book-title-input");
 const editAuthorInput = document.getElementById("edit-book-author-input");
-const editGenreInput = document.getElementById("edit-book-genre-input");
+const editGenreSelect = document.getElementById("edit-book-genre-select");
+const editGenreCustomInput = document.getElementById("edit-book-genre-custom-input");
 const editYearInput = document.getElementById("edit-book-year-input");
 
 // Referencias del modal de vista detallada
@@ -181,6 +183,41 @@ function updateGenreOptions() {
     } else {
         genreFilter.value = "all";
     }
+    
+    // Sincronizar selectores de los formularios de añadir/editar
+    updateFormGenreSelects();
+}
+
+/**
+ * Actualiza dinámicamente las opciones de género en los formularios de añadir y editar
+ */
+function updateFormGenreSelects() {
+    const genres = [...new Set(books.map(b => b.genre))];
+    
+    const populateSelect = (selectEl) => {
+        const currentValue = selectEl.value;
+        selectEl.innerHTML = '<option value="" disabled selected>Selecciona un género...</option>';
+        
+        genres.forEach(genre => {
+            const option = document.createElement("option");
+            option.value = genre;
+            option.textContent = genre;
+            selectEl.appendChild(option);
+        });
+        
+        // Agregar opción personalizada
+        const customOption = document.createElement("option");
+        customOption.value = "custom";
+        customOption.textContent = "Otro (Crear nuevo)...";
+        selectEl.appendChild(customOption);
+        
+        if (genres.includes(currentValue) || currentValue === "custom") {
+            selectEl.value = currentValue;
+        }
+    };
+    
+    populateSelect(genreSelect);
+    populateSelect(editGenreSelect);
 }
 
 // Funciones para el Modal
@@ -192,6 +229,8 @@ function openModal() {
 function closeModal() {
     addBookModal.classList.remove("active");
     addBookForm.reset();
+    genreCustomInput.style.display = "none";
+    genreCustomInput.required = false;
 }
 
 // Funciones para el Modal de Edición
@@ -201,7 +240,13 @@ function openEditModal(bookId) {
         editBookId.value = book.id;
         editTitleInput.value = book.title;
         editAuthorInput.value = book.author;
-        editGenreInput.value = book.genre;
+        
+        // Cargar género en select
+        editGenreSelect.value = book.genre;
+        editGenreCustomInput.style.display = "none";
+        editGenreCustomInput.required = false;
+        editGenreCustomInput.value = "";
+        
         editYearInput.value = book.year;
         editBookModal.classList.add("active");
     }
@@ -210,6 +255,8 @@ function openEditModal(bookId) {
 function closeEditModal() {
     editBookModal.classList.remove("active");
     editBookForm.reset();
+    editGenreCustomInput.style.display = "none";
+    editGenreCustomInput.required = false;
 }
 
 function handleEditBook(e) {
@@ -218,12 +265,22 @@ function handleEditBook(e) {
     const id = parseInt(editBookId.value);
     const title = editTitleInput.value.trim();
     const author = editAuthorInput.value.trim();
-    const genre = editGenreInput.value.trim();
     const year = parseInt(editYearInput.value);
     
+    let genre = editGenreSelect.value;
+    if (genre === "custom") {
+        genre = editGenreCustomInput.value.trim();
+    }
+    
+    // Validar género seleccionado
+    if (!genre) {
+        showToast("Por favor selecciona o escribe un género.", "error");
+        return;
+    }
+    
     // Validar longitudes
-    if (title.length < 2 || author.length < 2) {
-        showToast("El título y el autor deben tener al menos 2 caracteres.", "error");
+    if (title.length < 2 || author.length < 2 || genre.length < 2) {
+        showToast("El título, el autor y el género deben tener al menos 2 caracteres.", "error");
         return;
     }
     
@@ -342,12 +399,22 @@ function handleAddBook(e) {
     
     const title = titleInput.value.trim();
     const author = authorInput.value.trim();
-    const genre = genreInput.value.trim();
     const year = parseInt(yearInput.value);
     
+    let genre = genreSelect.value;
+    if (genre === "custom") {
+        genre = genreCustomInput.value.trim();
+    }
+    
+    // Validar género seleccionado
+    if (!genre) {
+        showToast("Por favor selecciona o escribe un género.", "error");
+        return;
+    }
+    
     // Validar longitudes
-    if (title.length < 2 || author.length < 2) {
-        showToast("El título y el autor deben tener al menos 2 caracteres.", "error");
+    if (title.length < 2 || author.length < 2 || genre.length < 2) {
+        showToast("El título, el autor y el género deben tener al menos 2 caracteres.", "error");
         return;
     }
     
@@ -513,6 +580,31 @@ confirmCancelBtn.addEventListener("click", closeConfirmModal);
 confirmDeleteBtn.addEventListener("click", executeDeleteBook);
 themeToggle.addEventListener("click", toggleTheme);
 viewToggle.addEventListener("click", toggleView);
+
+// Eventos de selección de género personalizado
+genreSelect.addEventListener("change", (e) => {
+    if (e.target.value === "custom") {
+        genreCustomInput.style.display = "block";
+        genreCustomInput.required = true;
+        genreCustomInput.focus();
+    } else {
+        genreCustomInput.style.display = "none";
+        genreCustomInput.required = false;
+        genreCustomInput.value = "";
+    }
+});
+
+editGenreSelect.addEventListener("change", (e) => {
+    if (e.target.value === "custom") {
+        editGenreCustomInput.style.display = "block";
+        editGenreCustomInput.required = true;
+        editGenreCustomInput.focus();
+    } else {
+        editGenreCustomInput.style.display = "none";
+        editGenreCustomInput.required = false;
+        editGenreCustomInput.value = "";
+    }
+});
 
 // Eventos en la cuadrícula de libros (Delegación de eventos)
 booksGrid.addEventListener("click", (e) => {
