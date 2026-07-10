@@ -1,4 +1,6 @@
 // Modulo de Renderizado del Catalogo
+import { getIsCatalogLoading } from "./state.js";
+
 const booksGrid = document.getElementById("books-grid");
 
 const genreThemes = {
@@ -54,11 +56,21 @@ export function renderBooks(booksToRender) {
 
     booksGrid.innerHTML = "";
 
+    if (getIsCatalogLoading()) {
+        booksGrid.innerHTML = `
+            <div class="no-results">
+                <h3>Cargando catálogo</h3>
+                <p>Conectando con Firestore...</p>
+            </div>
+        `;
+        return;
+    }
+
     if (booksToRender.length === 0) {
         booksGrid.innerHTML = `
             <div class="no-results">
                 <h3>No se encontraron libros</h3>
-                <p>Prueba con otra búsqueda o cambia los filtros.</p>
+                <p>Agrega tu primer libro o cambia los filtros activos.</p>
             </div>
         `;
         return;
